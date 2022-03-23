@@ -25,7 +25,7 @@ struct SendButton: View {
         })
     }
 
-    func sendMessage() {
+    func sendMessage() { //can't send an empty message
         guard !text.trimmingCharacters(in: .whitespaces).isEmpty else {
             return
         }

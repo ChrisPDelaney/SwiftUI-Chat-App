@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+//Custom field for text fields, specifically for searches
 struct CustomField: ViewModifier {
     func body(content: Content) -> some View {
         return content
@@ -21,12 +22,15 @@ struct ChatView: View {
     @EnvironmentObject var model: AppStateModel
     let otherUsername: String
 
+    //for opening the chat view of a specific user
     init(otherUsername: String) {
         self.otherUsername = otherUsername
     }
 
     var body: some View {
-        VStack {
+        VStack { 
+            
+            //This is going to nest a bunch of chat
             ScrollView(.vertical) {
                 ForEach(model.messages, id: \.self) { message in
                     ChatRow(text: message.text,
@@ -45,7 +49,7 @@ struct ChatView: View {
             .padding()
         }
         .navigationBarTitle(otherUsername, displayMode: .inline)
-        .onAppear {
+        .onAppear { //start observing the conversation that we're in
             model.otherUsername = otherUsername
             model.observeChat()
         }

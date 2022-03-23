@@ -17,15 +17,19 @@ struct ChatRow: View {
 
     let text: String
 
+    //let's us know if the row is something we sent or received
     init(text: String, type: MessageType) {
-        self.text = text
+        self.text = text //the text the user or other person sent/received
         self.type = type
     }
 
     var body: some View {
         HStack {
+            
+            //pushes to the right if not sender
             if isSender { Spacer() }
 
+            //if it's not the sender
             if !isSender {
                 VStack {
                     Spacer()
@@ -40,11 +44,11 @@ struct ChatRow: View {
 
             HStack {
                 Text(text)
-                    .foregroundColor(isSender ? Color.white : Color(.label))
+                    .foregroundColor(isSender ? Color.white : Color(.label)) //label color accomodates light/dark mode
                     .padding()
             }
             .background(isSender ? Color.blue : Color(.systemGray4))
-            .padding(isSender ? .leading : .trailing,
+            .padding(isSender ? .leading : .trailing, //cuts off message so it doesn't take up width of whole screen
                      isSender ? UIScreen.main.bounds.width/3 : UIScreen.main.bounds.width/5)
             .cornerRadius(6)
 

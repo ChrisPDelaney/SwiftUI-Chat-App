@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SearchView: View {
+    
+    //Allows you to dismiss given presentation by using this property wrapper
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @EnvironmentObject var model: AppStateModel
     @State var text: String = ""
@@ -19,13 +21,14 @@ struct SearchView: View {
     init(completion: @escaping ((String) -> Void)) {
         self.completion = completion
     }
+    
 
     var body: some View {
         VStack {
-            TextField("Username...", text: $text)
+            TextField("Username...", text: $text) //the text the user is typing in
                 .modifier(CustomField())
 
-            Button("Search") {
+            Button("Search") { //ensures that user is not just searching for whitespace
                 guard !text.trimmingCharacters(in: .whitespaces).isEmpty else {
                     return
                 }
@@ -46,9 +49,9 @@ struct SearchView: View {
                             .font(.system(size: 24))
 
                         Spacer()
-                    }
+                    } //open up 
                     .onTapGesture {
-                        presentationMode.wrappedValue.dismiss()
+                        presentationMode.wrappedValue.dismiss()//this will dismiss the search view
                         completion(name)
                     }
                 }

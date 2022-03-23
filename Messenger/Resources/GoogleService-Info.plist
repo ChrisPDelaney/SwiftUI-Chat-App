@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>60574321703-ac07rvujs5k9a699rvl1mm553o78u1rh.apps.googleusercontent.com</string>
+	<string>344976161593-ng8bi5s6mr54vpgln80tqr7b9kc99nu7.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.60574321703-ac07rvujs5k9a699rvl1mm553o78u1rh</string>
+	<string>com.googleusercontent.apps.344976161593-ng8bi5s6mr54vpgln80tqr7b9kc99nu7</string>
 	<key>API_KEY</key>
-	<string>AIzaSyB-Shn18AOKojc7_Vtk6-8LHygdB9fATuk</string>
+	<string>AIzaSyCFnrzaGb2wmVf31esWCB82ubbekmsHliY</string>
 	<key>GCM_SENDER_ID</key>
-	<string>60574321703</string>
+	<string>344976161593</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>io.iosacademy.Messenger</string>
+	<string>christopherdelaney.messenger</string>
 	<key>PROJECT_ID</key>
-	<string>messenger-swiftui</string>
+	<string>messenger-swift-ui-7d80e</string>
 	<key>STORAGE_BUCKET</key>
-	<string>messenger-swiftui.appspot.com</string>
+	<string>messenger-swift-ui-7d80e.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:60574321703:ios:30eb435201b524c3205202</string>
+	<string>1:344976161593:ios:d9cb72a22c22f5216886e8</string>
 </dict>
 </plist>

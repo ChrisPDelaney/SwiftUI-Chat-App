@@ -17,8 +17,8 @@ struct ConversationListView: View {
         NavigationView {
             ScrollView(.vertical) {
                 ForEach(model.conversations, id: \.self) { name in
-                    NavigationLink(
-                        destination: ChatView(otherUsername: name),
+                    NavigationLink( //Where you're linking to
+                        destination: ChatView(otherUsername: name),//destination is the user's view
                         label: {
                             HStack {
                                 Image(model.currentUsername == "Matt" ? "photo1" : "photo2")
@@ -39,6 +39,7 @@ struct ConversationListView: View {
                         })
                 }
 
+                //open up chat view automatically by tapping something in search?
                 if !otherUsername.isEmpty {
                     NavigationLink("",
                                    destination: ChatView(otherUsername: otherUsername),
@@ -52,14 +53,16 @@ struct ConversationListView: View {
                         self.signOut()
                     }
                 }
-
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(
+                //search bar
+                ToolbarItem(placement: .navigationBarTrailing) { 
+                    NavigationLink(         //name will be the other user's name we tapped to start a convo with
                         destination: SearchView { name in
                             self.showSearch = false
-                            DispatchQueue.main.asyncAfter(deadline: .now()+1) {
+                            print("hello")
+                           //we want to wait for the search view to disappear before we try to show the chat view
+                            DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those
                                 self.showChat = true
-                                self.otherUsername = name
+                                self.otherUsername = name //retrieved from compeltion handler of SearchView
                             }
                         },
                         isActive: $showSearch,
@@ -72,6 +75,7 @@ struct ConversationListView: View {
                 SignInView()
             })
             .onAppear {
+                //make sure the user is signed in, don't want to get conversations if there's no user
                 guard model.auth.currentUser != nil else {
                     return
                 }

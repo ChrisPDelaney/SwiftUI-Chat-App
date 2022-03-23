@@ -13,6 +13,7 @@ import FirebaseFirestore
 
 //Represents all the data and operations our app needs to do
     //If we're chatting with somebody, sending a new message, etc.
+    //TESTING
 class AppStateModel: ObservableObject {
     @AppStorage("currentUsername") var currentUsername: String = ""
     @AppStorage("currentEmail") var currentEmail: String = ""

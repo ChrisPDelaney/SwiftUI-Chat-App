@@ -9,16 +9,16 @@ import SwiftUI
 
 struct ConversationListView: View {
     @EnvironmentObject var model: AppStateModel
-    @State var otherUsername: String = ""
+    @State var otherUsername: String = "" //chatDate
     @State var showChat = false
     @State var showSearch = false
 
     var body: some View {
         NavigationView {
             ScrollView(.vertical) {
-                ForEach(model.conversations, id: \.self) { name in
+                ForEach(model.conversations, id: \.self) { name in //JP
                     NavigationLink( //Where you're linking to
-                        destination: ChatView(otherUsername: name),//destination is the user's view
+                        destination: ChatView(otherUsername: name),//destination is the user's view //JP
                         label: {
                             HStack {
                                 Image(model.currentUsername == "Matt" ? "photo1" : "photo2")
@@ -28,7 +28,7 @@ struct ConversationListView: View {
                                     .foregroundColor(Color.pink)
                                     .clipShape(Circle())
 
-                                Text(name)
+                                Text(name) //JP
                                     .bold()
                                     .foregroundColor(Color(.label))
                                     .font(.system(size: 32))
@@ -40,9 +40,9 @@ struct ConversationListView: View {
                 }
 
                 //open up chat view automatically by tapping something in search?
-                if !otherUsername.isEmpty {
+                if !otherUsername.isEmpty { //JP
                     NavigationLink("",
-                                   destination: ChatView(otherUsername: otherUsername),
+                                   destination: ChatView(otherUsername: otherUsername), //JP
                                    isActive: $showChat)
                 }
             }
@@ -56,13 +56,13 @@ struct ConversationListView: View {
                 //search bar
                 ToolbarItem(placement: .navigationBarTrailing) { 
                     NavigationLink(         //name will be the other user's name we tapped to start a convo with
-                        destination: SearchView { name in
+                        destination: SearchView { name in //JP
                             self.showSearch = false
-                            print("hello")
-                           //we want to wait for the search view to disappear before we try to show the chat view
+
+                            //we want to wait for the search view to disappear before we try to show the chat view
                             DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those
                                 self.showChat = true
-                                self.otherUsername = name //retrieved from compeltion handler of SearchView
+                                self.otherUsername = name //retrieved from compeltion handler of SearchView //JP
                             }
                         },
                         isActive: $showSearch,

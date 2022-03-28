@@ -90,7 +90,7 @@ extension AppStateModel {
             .collection("users")
             .document(currentUsername)
             .collection("chats")
-            .document(otherUsername)
+            .document(otherUsername) //change this to date or something- JP
             .collection("messages")
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let objects = snapshot?.documents.compactMap({ $0.data() }), //returns an array of dictionaries

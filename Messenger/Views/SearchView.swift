@@ -39,20 +39,20 @@ struct SearchView: View {
             }
 
             List {
-                ForEach(usernames, id: \.self) { name in
+                ForEach(usernames, id: \.self) { name in //JP
                     HStack {
                         Circle()
                             .frame(width: 55, height: 55)
                             .foregroundColor(Color.green)
 
-                        Text(name)
+                        Text(name) //JP
                             .font(.system(size: 24))
 
                         Spacer()
                     } //open up 
                     .onTapGesture {
                         presentationMode.wrappedValue.dismiss()//this will dismiss the search view
-                        completion(name)
+                        completion(name) //date not name JP
                     }
                 }
             }

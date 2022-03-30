@@ -48,9 +48,9 @@ struct ChatView: View {
             }
             .padding()
         }
-        .navigationBarTitle(otherUsername, displayMode: .inline)
+        .navigationBarTitle(otherUsername, displayMode: .inline) //TESTING PULL
         .onAppear { //start observing the conversation that we're in
-            model.otherUsername = otherUsername
+            model.otherUsername = otherUsername// this needs to set an array of the group chat of the other usernames
             model.observeChat()
         }
     }

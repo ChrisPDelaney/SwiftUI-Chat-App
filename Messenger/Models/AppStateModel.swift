@@ -105,6 +105,7 @@ extension AppStateModel {
                     }
                     return Message(
                         text: $0["text"] as? String ?? "",
+                        //set username here rather than doing the type
                         type: $0["sender"] as? String == self?.currentUsername ? .sent : .received,
                         created: date
                     )
@@ -141,21 +142,25 @@ extension AppStateModel {
             .document(newMessageId)
             .setData(data)
 
+        //loop here forEach username in GCUsers
         database.collection("users")
-            .document(otherUsername)
-            .collection("chats")
-            .document(currentUsername)
+            .document(otherUsername) //username
+            .collection("chats") //nights
+            .document(currentUsername) //date
             .collection("messages")
             .document(newMessageId)
             .setData(data)
     }
 
+    //change to create night
     func createConversation() {
         database.collection("users")
             .document(currentUsername)
             .collection("chats")
-            .document(otherUsername).setData(["created":"true"])
+        //.collection(getCurrentDate())
+            .document(otherUsername).setData(["created":"true"])// //loops over an array of usernames
 
+        //
         database.collection("users")
             .document(otherUsername)
             .collection("chats")

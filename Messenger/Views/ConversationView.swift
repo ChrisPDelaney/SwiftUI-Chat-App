@@ -46,7 +46,7 @@ struct ConversationListView: View {
                                    isActive: $showChat)
                 }
             }
-            .navigationTitle("Conversations")
+            .navigationTitle(model.currentUsername)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Sign Out") {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2547150527F613C10019EF23 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2547150427F613C10019EF23 /* SearchView.swift */; };
 		255BD75C27E2582D0097B2D0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 255BD75B27E2582D0097B2D0 /* GoogleService-Info.plist */; };
 		833EE8E3262B1C48004A9F9E /* MessengerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833EE8E2262B1C48004A9F9E /* MessengerApp.swift */; };
 		833EE8E5262B1C48004A9F9E /* ConversationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833EE8E4262B1C48004A9F9E /* ConversationView.swift */; };
@@ -16,7 +17,6 @@
 		833EE8FA262B1CC7004A9F9E /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833EE8F9262B1CC7004A9F9E /* SignUpView.swift */; };
 		833EE8FD262B1CD7004A9F9E /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833EE8FC262B1CD7004A9F9E /* ChatView.swift */; };
 		833EE900262B1CE2004A9F9E /* ChatRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833EE8FF262B1CE2004A9F9E /* ChatRow.swift */; };
-		833EE903262B1CEF004A9F9E /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833EE902262B1CEF004A9F9E /* SearchView.swift */; };
 		833EE906262B1CFE004A9F9E /* SendButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833EE905262B1CFE004A9F9E /* SendButton.swift */; };
 		833EE909262B1D12004A9F9E /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833EE908262B1D12004A9F9E /* Message.swift */; };
 		833EE90C262B1D23004A9F9E /* AppStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833EE90B262B1D23004A9F9E /* AppStateModel.swift */; };
@@ -25,6 +25,7 @@
 
 /* Begin PBXFileReference section */
 		0B7AEBEB773027514C6F28A0 /* Pods_Messenger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Messenger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2547150427F613C10019EF23 /* SearchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SearchView.swift; path = ../../../../SearchView.swift; sourceTree = "<group>"; };
 		255BD75B27E2582D0097B2D0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		62F97E9FA1F51FEA5242A9A6 /* Pods-Messenger.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Messenger.debug.xcconfig"; path = "Target Support Files/Pods-Messenger/Pods-Messenger.debug.xcconfig"; sourceTree = "<group>"; };
 		82F412CACB8CF76C1D5DE609 /* Pods-Messenger.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Messenger.release.xcconfig"; path = "Target Support Files/Pods-Messenger/Pods-Messenger.release.xcconfig"; sourceTree = "<group>"; };
@@ -38,7 +39,6 @@
 		833EE8F9262B1CC7004A9F9E /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		833EE8FC262B1CD7004A9F9E /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		833EE8FF262B1CE2004A9F9E /* ChatRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRow.swift; sourceTree = "<group>"; };
-		833EE902262B1CEF004A9F9E /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		833EE905262B1CFE004A9F9E /* SendButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendButton.swift; sourceTree = "<group>"; };
 		833EE908262B1D12004A9F9E /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		833EE90B262B1D23004A9F9E /* AppStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateModel.swift; sourceTree = "<group>"; };
@@ -110,8 +110,8 @@
 				833EE8F5262B1CBA004A9F9E /* SignInView.swift */,
 				833EE8F9262B1CC7004A9F9E /* SignUpView.swift */,
 				833EE8FC262B1CD7004A9F9E /* ChatView.swift */,
+				2547150427F613C10019EF23 /* SearchView.swift */,
 				833EE8FF262B1CE2004A9F9E /* ChatRow.swift */,
-				833EE902262B1CEF004A9F9E /* SearchView.swift */,
 				833EE905262B1CFE004A9F9E /* SendButton.swift */,
 			);
 			path = Views;
@@ -263,11 +263,11 @@
 				833EE8F6262B1CBA004A9F9E /* SignInView.swift in Sources */,
 				833EE909262B1D12004A9F9E /* Message.swift in Sources */,
 				833EE8FD262B1CD7004A9F9E /* ChatView.swift in Sources */,
-				833EE903262B1CEF004A9F9E /* SearchView.swift in Sources */,
 				833EE8E5262B1C48004A9F9E /* ConversationView.swift in Sources */,
 				833EE900262B1CE2004A9F9E /* ChatRow.swift in Sources */,
 				833EE8E3262B1C48004A9F9E /* MessengerApp.swift in Sources */,
 				833EE90C262B1D23004A9F9E /* AppStateModel.swift in Sources */,
+				2547150527F613C10019EF23 /* SearchView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

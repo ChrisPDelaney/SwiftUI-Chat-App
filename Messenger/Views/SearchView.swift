@@ -15,12 +15,11 @@ struct SearchView: View {
     @State var text: String = ""
 
     @State var usernames: [String] = []
-    
     @State var selected: [String] = []
-    
-    let completion: ((String) -> Void)
+        
+    let completion: (([String]) -> Void)
 
-    init(completion: @escaping ((String) -> Void)) {
+    init(completion: @escaping (([String]) -> Void)) {
         self.completion = completion
     }
     
@@ -89,7 +88,7 @@ struct SearchView: View {
                             selected.append(name)
                         }
                     }
-                    /*.onTapGesture {
+                    /*.onTapGesture { // Old code
                         presentationMode.wrappedValue.dismiss()//this will dismiss the search view
                         completion(name) //date not name JP
                     }*/
@@ -97,16 +96,16 @@ struct SearchView: View {
             }
             
             Button(action: {
-                
+                presentationMode.wrappedValue.dismiss()//this will dismiss the search view
+                completion(selected) //date not name JP
             }) {
                 Text("Add to Group")
-                    .fontWeight(.bold)
                     .font(.largeTitle)
                     .foregroundColor(selected.isEmpty ? Color.blue : Color.white)
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.blue, lineWidth: 5)
+                            .stroke(Color.blue, lineWidth: 3)
                             .frame(height: 50)
                             .background(
                                 RoundedRectangle(cornerRadius: 20)
@@ -123,7 +122,7 @@ struct SearchView: View {
 
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchView() { _ in }
+        SearchView() { _  in }
             .preferredColorScheme(.dark)
     }
 }

@@ -17,15 +17,15 @@ import FirebaseFirestore
 class AppStateModel: ObservableObject {
     @AppStorage("currentUsername") var currentUsername: String = ""
     @AppStorage("currentEmail") var currentEmail: String = ""
+    @AppStorage("currentDate") var currentDate: String = "2022-01-27"
 
     @Published var showingSignIn: Bool = true
+    @Published var currentGroup: [String] = []
     @Published var conversations: [String] = []
     @Published var messages: [Message] = []
 
     let database = Firestore.firestore()
     let auth = Auth.auth()
-
-    var otherUsername = ""
 
     var conversationListener: ListenerRegistration?
     var chatListener: ListenerRegistration?
@@ -67,7 +67,7 @@ extension AppStateModel {
         conversationListener = database
             .collection("users")
             .document(currentUsername)//listen to the current users chats ; weak self prevents memory leak
-            .collection("chats").addSnapshotListener { [weak self] snapshot, error in
+            .collection("conversations").addSnapshotListener { [weak self] snapshot, error in //chats to nights
                 guard let usernames = snapshot?.documents.compactMap({ $0.documentID }),
                       error == nil else {
                     return
@@ -89,8 +89,6 @@ extension AppStateModel {
         chatListener = database
             .collection("users")
             .document(currentUsername)
-            .collection("chats")
-            .document(otherUsername) //change this to date or something- JP
             .collection("messages")
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let objects = snapshot?.documents.compactMap({ $0.data() }), //returns an array of dictionaries
@@ -107,6 +105,7 @@ extension AppStateModel {
                         text: $0["text"] as? String ?? "",
                         //set username here rather than doing the type
                         type: $0["sender"] as? String == self?.currentUsername ? .sent : .received,
+                        sender: $0["sender"] as? String ?? "",
                         created: date
                     )
                 }).sorted(by: { first, second in
@@ -134,37 +133,23 @@ extension AppStateModel {
             "created": dateString
         ]
 
-        database.collection("users")
-            .document(currentUsername)
-            .collection("chats")
-            .document(otherUsername)
-            .collection("messages")
-            .document(newMessageId)
-            .setData(data)
-
         //loop here forEach username in GCUsers
-        database.collection("users")
-            .document(otherUsername) //username
-            .collection("chats") //nights
-            .document(currentUsername) //date
-            .collection("messages")
-            .document(newMessageId)
-            .setData(data)
+        for user in currentGroup {
+            database.collection("users")
+                .document(user) // should be each user
+                .collection("messages")
+                .document(newMessageId)
+                .setData(data)
+        }
     }
 
     //change to create night
     func createConversation() {
-        database.collection("users")
-            .document(currentUsername)
-            .collection("chats")
-        //.collection(getCurrentDate())
-            .document(otherUsername).setData(["created":"true"])// //loops over an array of usernames
-
-        //
-        database.collection("users")
-            .document(otherUsername)
-            .collection("chats")
-            .document(currentUsername).setData(["created":"true"])
+        
+        for user in currentGroup { //created for loop here
+            database.collection("users")
+                .document(user).setData(["groupMembers" : currentGroup])
+        }
     }
 }
 

@@ -15,5 +15,6 @@ enum MessageType: String {
 struct Message: Hashable {
     let text: String
     let type: MessageType
+    let sender: String
     let created: Date // Date
 }

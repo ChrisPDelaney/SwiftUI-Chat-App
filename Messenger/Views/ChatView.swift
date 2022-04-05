@@ -20,12 +20,6 @@ struct CustomField: ViewModifier {
 struct ChatView: View {
     @State var message: String = ""
     @EnvironmentObject var model: AppStateModel
-    let otherUsername: String
-
-    //for opening the chat view of a specific user
-    init(otherUsername: String) {
-        self.otherUsername = otherUsername
-    }
 
     var body: some View {
         VStack { 
@@ -34,7 +28,8 @@ struct ChatView: View {
             ScrollView(.vertical) {
                 ForEach(model.messages, id: \.self) { message in
                     ChatRow(text: message.text,
-                            type: message.type)
+                            type: message.type,
+                            sender: message.sender)
                         .padding(3)
                 }
             }
@@ -48,9 +43,8 @@ struct ChatView: View {
             }
             .padding()
         }
-        .navigationBarTitle(otherUsername, displayMode: .inline) //TESTING PULL
+        .navigationBarTitle(model.currentDate, displayMode: .inline) //JP FIX
         .onAppear { //start observing the conversation that we're in
-            model.otherUsername = otherUsername// this needs to set an array of the group chat of the other usernames
             model.observeChat()
         }
     }
@@ -58,7 +52,7 @@ struct ChatView: View {
 
 struct ChatView_Previews: PreviewProvider {
     static var previews: some View {
-        ChatView(otherUsername: "Samantha")
+        ChatView()
             .preferredColorScheme(.dark)
     }
 }

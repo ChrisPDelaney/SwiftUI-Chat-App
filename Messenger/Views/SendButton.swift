@@ -31,6 +31,8 @@ struct SendButton: View {
         }
 
         model.sendMessage(text: text)
+        
+        print(text)
 
         text = ""
     }

@@ -208,10 +208,10 @@ extension AppStateModel {
                     self?.currentEmail = email
                     self?.currentUsername = username
                     self?.showingSignIn = false
+                    self?.currentGroup = []
                 }
             })
         }
-        getGroup()
     }
 
     func signUp(email: String, username: String, password: String) {
@@ -237,6 +237,7 @@ extension AppStateModel {
                         self?.currentUsername = username
                         self?.currentEmail = email
                         self?.showingSignIn = false
+                        self?.currentGroup = []
                     }
                 }
         }

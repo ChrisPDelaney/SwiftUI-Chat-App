@@ -77,6 +77,8 @@ struct GroupHome: View {
                 guard model.auth.currentUser != nil else {
                     return
                 }
+                
+                model.getGroup()
             }
         }
     }

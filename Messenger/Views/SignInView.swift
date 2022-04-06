@@ -59,6 +59,9 @@ struct SignInView: View {
                 }
             }
         }
+        .onDisappear {
+            model.getGroup()
+        }
     }
 
     func signIn() {

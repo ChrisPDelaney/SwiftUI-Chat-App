@@ -18,6 +18,7 @@ class AppStateModel: ObservableObject {
     @AppStorage("currentUsername") var currentUsername: String = ""
     @AppStorage("currentEmail") var currentEmail: String = ""
     @AppStorage("currentDate") var currentDate: String = "2022-01-27" //added
+    @AppStorage("currentVenue") var currentVenue: String = "The Tombs" //added
 
     @Published var showingSignIn: Bool = true
     @Published var currentGroup: [String] = [] //added

@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct NightOutMember: View {
+struct GroupMemberRow: View {
     var body: some View {
         HStack {
-            Image("Chris")
+            Image("photo1")
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 80, height: 80)
@@ -33,8 +33,8 @@ struct NightOutMember: View {
     }
 }
 
-struct NightOutMember_Previews: PreviewProvider {
+struct GroupMemberRow_Previews: PreviewProvider {
     static var previews: some View {
-        NightOutMember()
+        GroupMemberRow()
     }
 }

@@ -16,33 +16,31 @@ struct GroupHome: View {
 
     var body: some View {
         NavigationView {
-          VStack {
+            VStack {                
+                ScrollView(.vertical) {
+                    ForEach(model.currentGroup, id: \.self) { user in
+                        GroupMemberRow()
+                            .padding(3)
+                    }
+                }
+                
                 NavigationLink( //Where you're linking to
                     destination: ChatView(),//destination is the user's view //JP FIX
                     //model.currentGroup = selected, //retrieved from compeltion handler of SearchView //JP
                     label: {
                         HStack {
-                            Image(model.currentUsername == "Matt" ? "photo1" : "photo2")
+                            Image("chat")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 65, height: 65)
-                                .foregroundColor(Color.pink)
-                                .clipShape(Circle())
-
-                            Text("CurrentChat") //JP
-                                .bold()
-                                .foregroundColor(Color(.label))
-                                .font(.system(size: 32))
-
                             Spacer()
                         }
                         .padding()
                     }
                 )
-
-                Spacer()
             }
-            .navigationTitle(model.currentUsername)
+            .navigationTitle(model.currentDate)
+            //.navigationBarItems(trailing: Text(model.currentVenue))
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button( action: {

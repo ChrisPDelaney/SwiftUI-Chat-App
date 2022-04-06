@@ -13,6 +13,7 @@ enum MessageType: String {
 }
 
 struct Message: Hashable {
+    let id: String
     let text: String
     let type: MessageType
     let sender: String

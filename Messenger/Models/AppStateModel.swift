@@ -17,11 +17,11 @@ import FirebaseFirestore
 class AppStateModel: ObservableObject {
     @AppStorage("currentUsername") var currentUsername: String = ""
     @AppStorage("currentEmail") var currentEmail: String = ""
-    @AppStorage("currentDate") var currentDate: String = "2022-01-27"
+    @AppStorage("currentDate") var currentDate: String = "2022-01-27" //added
 
     @Published var showingSignIn: Bool = true
-    @Published var currentGroup: [String] = []
-    @Published var conversations: [String] = []
+    @Published var currentGroup: [String] = [] //added
+    @Published var conversations: [String] = [] //can prob delete
     @Published var messages: [Message] = []
 
     let database = Firestore.firestore()
@@ -39,7 +39,7 @@ class AppStateModel: ObservableObject {
 
 extension AppStateModel {
     func searchUsers(queryText: String, completion: @escaping ([String]) -> Void) {
-        database.collection("users").getDocuments { snapshot, error in //snapshot is the
+        database.collection("users").whereField("inGroup", isLessThan: true).order(by: "inGroup").getDocuments { snapshot, error in //snapshot is the
             guard let usernames = snapshot?.documents.compactMap({ $0.documentID }), //document id is the username
                   error == nil else {
                 completion([])//if there's an error/something goes wrong in compeltion handler, pass back an empty array
@@ -56,27 +56,68 @@ extension AppStateModel {
     }
 }
 
-// Conversations
+// Groups
 
 extension AppStateModel {
     
+    //change to create night
+    func createGroup() {
+        
+        for user in currentGroup { //created for loop here
+            for member in currentGroup {
+                database.collection("users")
+                    .document(user)
+                    .collection("groupMembers")
+                    .document(member).setData(["created":"true"])
+            }
+            database.collection("users")
+                .document(user).setData(["inGroup" : true], merge: true)
+        }
+    }
+    
     //this listens for conversations to pop up in the chat view. So if someone starts a new chat, a new username will pop up that you can navigate to
-    func getConversations() {
+    func getGroup() {
         // Listen for conversations
  
         conversationListener = database
             .collection("users")
             .document(currentUsername)//listen to the current users chats ; weak self prevents memory leak
-            .collection("conversations").addSnapshotListener { [weak self] snapshot, error in //chats to nights
+            .collection("groupMembers").addSnapshotListener { [weak self] snapshot, error in //chats to nights
                 guard let usernames = snapshot?.documents.compactMap({ $0.documentID }),
                       error == nil else {
                     return
                 }
 
                 DispatchQueue.main.async {
-                    self?.conversations = usernames
+                    self?.currentGroup = usernames
                 }
             }
+    }
+    
+    func leaveGroup() {
+        for user in currentGroup { //created for loop here
+            database.collection("users")
+                .document(user)
+                .collection("groupMembers")
+                .document(currentUsername).delete()
+            if (currentUsername != user) {
+                database.collection("users")
+                    .document(currentUsername)
+                    .collection("groupMembers")
+                    .document(user).delete()
+            }
+        }
+        
+        database.collection("users")
+            .document(currentUsername).setData(["inGroup" : false], merge: true)
+        
+        for message in messages {
+            database.collection("users")
+                .document(currentUsername)
+                .collection("messages")
+                .document(message.id).delete()
+        }
+
     }
 }
 
@@ -84,8 +125,6 @@ extension AppStateModel {
 
 extension AppStateModel {
     func observeChat() {
-        createConversation()
-
         chatListener = database
             .collection("users")
             .document(currentUsername)
@@ -102,6 +141,7 @@ extension AppStateModel {
                         return nil
                     }
                     return Message(
+                        id: $0["id"] as? String ?? "",
                         text: $0["text"] as? String ?? "",
                         //set username here rather than doing the type
                         type: $0["sender"] as? String == self?.currentUsername ? .sent : .received,
@@ -128,6 +168,7 @@ extension AppStateModel {
         }
 
         let data = [
+            "id": newMessageId,
             "text": text,
             "sender": currentUsername,
             "created": dateString
@@ -140,15 +181,6 @@ extension AppStateModel {
                 .collection("messages")
                 .document(newMessageId)
                 .setData(data)
-        }
-    }
-
-    //change to create night
-    func createConversation() {
-        
-        for user in currentGroup { //created for loop here
-            database.collection("users")
-                .document(user).setData(["groupMembers" : currentGroup])
         }
     }
 }
@@ -187,16 +219,14 @@ extension AppStateModel {
                 return
             }
 
-            // Insert username into database
-            let data = [
-                "email": email,
-                "username": username
-            ]
-
             self?.database
                 .collection("users")
                 .document(username)
-                .setData(data) { error in
+                .setData([
+                    "email": email,
+                    "username": username,
+                    "inGroup": false
+                ]) { error in
                     guard error == nil else {
                         return
                     }

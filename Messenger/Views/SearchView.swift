@@ -40,62 +40,38 @@ struct SearchView: View {
 
             List {
                 ForEach(usernames, id: \.self) { name in //JP
-                    /*HStack {
-                        Image("Chris")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 80, height: 80)
-                            .clipShape(Circle())
-                        
-                        Text("Christopher")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            self.isClicked.toggle()
-                        }) {
-                            Image(systemName: self.isClicked == true ? "checkmark.circle.fill" : "circle")
+                    if name != model.currentUsername {
+                        HStack {
+                            Image("photo1")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 55, height: 55)
+                                .clipShape(Circle())
+
+                            Text(name) //JP
+                                .font(.system(size: 24))
+                                    
+                            Spacer()
+                            
+                            Image(systemName: selected.contains(name) ? "checkmark.circle.fill" : "circle") //if array contains name (fill/empty)
                                 .resizable()
                                 .foregroundColor(.blue)
                                 .padding()
-                                .frame(width: 75, height: 75)
-                        }
-                    }*/
-                    HStack {
-                        Image("photo1")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 55, height: 55)
-                            .clipShape(Circle())
-
-                        Text(name) //JP
-                            .font(.system(size: 24))
-                                
-                        Spacer()
-                        
-                        Image(systemName: selected.contains(name) ? "checkmark.circle.fill" : "circle") //if array contains name (fill/empty)
-                            .resizable()
-                            .foregroundColor(.blue)
-                            .padding()
-                            .frame(width: 55, height: 55)
-                    } //open up
-                    .onTapGesture { // add/remove to selected array
-                        if let idx = selected.firstIndex(of: name) { // if in array
-                            selected.remove(at: idx)
-                        } else { // if not in array
-                            selected.append(name)
+                                .frame(width: 55, height: 55)
+                        } //open up
+                        .onTapGesture { // add/remove to selected array
+                            if let idx = selected.firstIndex(of: name) { // if in array
+                                selected.remove(at: idx)
+                            } else { // if not in array
+                                selected.append(name)
+                            }
                         }
                     }
-                    /*.onTapGesture { // Old code
-                        presentationMode.wrappedValue.dismiss()//this will dismiss the search view
-                        completion(name) //date not name JP
-                    }*/
                 }
             }
             
             Button(action: {
+                selected.append(model.currentUsername)
                 presentationMode.wrappedValue.dismiss()//this will dismiss the search view
                 completion(selected) //date not name JP
             }) {

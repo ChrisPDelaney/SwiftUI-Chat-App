@@ -44,6 +44,16 @@ struct ChatView: View {
             .padding()
         }
         .navigationBarTitle(model.currentDate, displayMode: .inline) //JP FIX
+        .toolbar {
+            //leave button
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    model.leaveGroup()
+                }) {
+                    Text("Leave")
+                }
+            }
+        }
         .onAppear { //start observing the conversation that we're in
             model.observeChat()
         }

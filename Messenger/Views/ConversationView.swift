@@ -50,6 +50,7 @@ struct ConversationListView: View {
           VStack {
                 NavigationLink( //Where you're linking to
                     destination: ChatView(),//destination is the user's view //JP FIX
+                    //model.currentGroup = selected, //retrieved from compeltion handler of SearchView //JP
                     label: {
                         HStack {
                             Image(model.currentUsername == "Matt" ? "photo1" : "photo2")
@@ -86,9 +87,10 @@ struct ConversationListView: View {
                             self.showSearch = false
 
                             //we want to wait for the search view to disappear before we try to show the chat view
-                            DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those
-                                self.showChat = true
+                            DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those //Consider changing
+                                self.showChat = true //breakpoint
                                 model.currentGroup = selected //retrieved from compeltion handler of SearchView //JP
+                                model.createGroup()
                             }
                         },
                         isActive: $showSearch,
@@ -105,8 +107,8 @@ struct ConversationListView: View {
                 guard model.auth.currentUser != nil else {
                     return
                 }
-
-                model.getConversations()
+                
+                model.getGroup()
             }
         }
     }

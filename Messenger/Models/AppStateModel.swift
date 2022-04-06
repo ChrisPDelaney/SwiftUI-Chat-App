@@ -22,6 +22,7 @@ class AppStateModel: ObservableObject {
 
     @Published var showingSignIn: Bool = true
     @Published var currentGroup: [String] = [] //added
+    @Published var beerCounts: [Int] = [] //added
     @Published var conversations: [String] = [] //can prob delete
     @Published var messages: [Message] = []
 
@@ -30,6 +31,7 @@ class AppStateModel: ObservableObject {
 
     var conversationListener: ListenerRegistration?
     var chatListener: ListenerRegistration?
+    var beerListener: ListenerRegistration?
 
     init() {
         self.showingSignIn = Auth.auth().currentUser == nil
@@ -60,19 +62,17 @@ extension AppStateModel {
 // Groups
 
 extension AppStateModel {
-    
     //change to create night
     func createGroup() {
-        
         for user in currentGroup { //created for loop here
             for member in currentGroup {
                 database.collection("users")
                     .document(user)
                     .collection("groupMembers")
-                    .document(member).setData(["created":"true"])
+                    .document(member).setData([ "beerCount": 0])
             }
             database.collection("users")
-                .document(user).setData(["inGroup" : true], merge: true)
+                .document(user).setData(["inGroup": true], merge: true)
         }
     }
     
@@ -197,7 +197,6 @@ extension AppStateModel {
                 return
             }
 
-
             // Try to sign in
             self?.auth.signIn(withEmail: email, password: password, completion: { result, error in
                 guard error == nil, result != nil else {
@@ -251,6 +250,26 @@ extension AppStateModel {
         }
         catch {
             print(error)
+        }
+    }
+}
+
+// Beer Count
+
+extension AppStateModel {
+    func getBeerCounts() {
+        beerListener = database.collection("users")
+            .document(currentUsername)
+            .collection("groupMembers")
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let beerCounts = snapshot?.documents.compactMap({$0.get("beerCount") as? Int }),
+                error == nil else {
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    self?.beerCounts = beerCounts
+                }
         }
     }
 }

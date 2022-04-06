@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct GroupMemberRow: View {
+    @EnvironmentObject var model: AppStateModel
+    
     let username: String
-    
-    //var drinkCount: Int
-    
+        
     var body: some View {
         HStack {
             Image("photo1")

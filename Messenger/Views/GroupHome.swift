@@ -79,6 +79,7 @@ struct GroupHome: View {
                 }
                 
                 model.getGroup()
+                model.getBeerCounts()
             }
         }
     }

@@ -50,7 +50,7 @@ struct GroupHome: View {
                     }) {
                         Text("After Five")
                             .foregroundColor(.black)
-                            .font(.custom("Sacramento", size: 40))
+                            .font(.custom("Sacramento-Regular", size: 40))
                     }
                 }
                 //search bar

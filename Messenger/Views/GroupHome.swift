@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ConversationListView: View {
+struct GroupHome: View {
     @EnvironmentObject var model: AppStateModel
     @State var otherUsernames: [String] = []
     @State var dayString: String = ""
@@ -45,12 +45,16 @@ struct ConversationListView: View {
             .navigationTitle(model.currentUsername)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Sign Out") {
+                    Button( action: {
                         self.signOut()
+                    }) {
+                        Text("After Five")
+                            .foregroundColor(.black)
+                            .font(.custom("Sacramento", size: 40))
                     }
                 }
                 //search bar
-                ToolbarItem(placement: .navigationBarTrailing) { 
+                ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink( //name will be the other user's name we tapped to start a convo with
                         destination: SearchView { selected  in //JP
                             self.showSearch = false
@@ -87,8 +91,8 @@ struct ConversationListView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct GroupHomeView_Previews: PreviewProvider {
     static var previews: some View {
-        ConversationListView()
+        GroupHome()
     }
 }

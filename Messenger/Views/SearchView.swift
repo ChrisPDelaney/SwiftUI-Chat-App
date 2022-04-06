@@ -24,19 +24,22 @@ struct SearchView: View {
     }
     
     var body: some View {//test comment
-        VStack {
-            TextField("Username...", text: $text) //the text the user is typing in
-                .modifier(CustomField())
-
-            Button("Search") { //ensures that user is not just searching for whitespace
-                guard !text.trimmingCharacters(in: .whitespaces).isEmpty else {
-                    return
-                }
-
-                model.searchUsers(queryText: text) { usernames in
-                    self.usernames = usernames
-                }
+        let binding = Binding<String>(get: {
+            self.text
+        }, set: {
+            self.text = $0
+            guard !text.trimmingCharacters(in: .whitespaces).isEmpty else {
+                return
             }
+
+            model.searchUsers(queryText: text) { usernames in
+                self.usernames = usernames
+            }
+        })
+        
+        VStack {
+            TextField("Username...", text: binding) //the text the user is typing in
+            .modifier(CustomField())
 
             List {
                 ForEach(usernames, id: \.self) { name in //JP

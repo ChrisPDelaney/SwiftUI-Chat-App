@@ -211,6 +211,7 @@ extension AppStateModel {
                 }
             })
         }
+        getGroup()
     }
 
     func signUp(email: String, username: String, password: String) {

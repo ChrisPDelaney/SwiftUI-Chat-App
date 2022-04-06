@@ -16,11 +16,10 @@ struct GroupHome: View {
 
     var body: some View {
         NavigationView {
-            VStack {                
+            VStack {
                 ScrollView(.vertical) {
-                    ForEach(model.currentGroup, id: \.self) { user in
-                        GroupMemberRow()
-                            .padding(3)
+                    ForEach(model.currentGroup, id: \.self) { username in
+                        GroupMemberRow(username: username)
                     }
                 }
                 
@@ -46,7 +45,7 @@ struct GroupHome: View {
                     Button( action: {
                         self.signOut()
                     }) {
-                        Text("After Five")
+                        Text(model.currentUsername)
                             .foregroundColor(.black)
                             .font(.custom("Sacramento-Regular", size: 40))
                     }
@@ -78,8 +77,6 @@ struct GroupHome: View {
                 guard model.auth.currentUser != nil else {
                     return
                 }
-                
-                model.getGroup()
             }
         }
     }

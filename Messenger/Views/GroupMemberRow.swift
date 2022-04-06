@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct GroupMemberRow: View {
+    let username: String
+    
+    //var drinkCount: Int
+    
     var body: some View {
         HStack {
             Image("photo1")
@@ -16,7 +20,7 @@ struct GroupMemberRow: View {
                 .frame(width: 80, height: 80)
                 .clipShape(Circle())
             
-            Text("Christopher")
+            Text(username)
                 .font(.title2)
                 .fontWeight(.bold)
             
@@ -35,6 +39,6 @@ struct GroupMemberRow: View {
 
 struct GroupMemberRow_Previews: PreviewProvider {
     static var previews: some View {
-        GroupMemberRow()
+        GroupMemberRow(username: "test")
     }
 }

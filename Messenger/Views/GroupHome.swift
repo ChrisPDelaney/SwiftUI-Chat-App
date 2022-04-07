@@ -18,25 +18,32 @@ struct GroupHome: View {
         NavigationView {
             VStack {
                 ScrollView(.vertical) {
-                    ForEach(model.currentGroup, id: \.self) { username in
-                        GroupMemberRow(username: username)
+                    ForEach(model.currentGroup, id: \.self) { user in
+                        GroupMemberRow(user: user)
                     }
                 }
-                
-                NavigationLink( //Where you're linking to
-                    destination: ChatView(),//destination is the user's view //JP FIX
-                    //model.currentGroup = selected, //retrieved from compeltion handler of SearchView //JP
-                    label: {
-                        HStack {
+                HStack {
+                    NavigationLink( //Where you're linking to
+                        destination: ChatView(),//destination is the user's view //JP FIX
+                        //model.currentGroup = selected, //retrieved from compeltion handler of SearchView //JP
+                        label: {
                             Image("chat")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 65, height: 65)
-                            Spacer()
                         }
-                        .padding()
+                    )
+                    Spacer()
+                    Button( action: {
+                        model.increaseDrink()
+                    }) {
+                        Image("drink")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 65, height: 65)
                     }
-                )
+                }
+                .padding()
             }
             .navigationTitle(model.currentDate)
             //.navigationBarItems(trailing: Text(model.currentVenue))
@@ -59,8 +66,7 @@ struct GroupHome: View {
                             //we want to wait for the search view to disappear before we try to show the chat view
                             DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those //Consider changing
                                 self.showChat = true //breakpoint
-                                model.currentGroup = selected //retrieved from compeltion handler of SearchView //JP
-                                model.createGroup()
+                                model.createGroup(selected: selected)
                             }
                         },
                         isActive: $showSearch,
@@ -79,7 +85,6 @@ struct GroupHome: View {
                 }
                 
                 model.getGroup()
-                model.getBeerCounts()
             }
         }
     }

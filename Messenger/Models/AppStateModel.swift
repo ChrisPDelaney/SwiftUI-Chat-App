@@ -10,6 +10,7 @@ import SwiftUI
 
 import FirebaseAuth
 import FirebaseFirestore
+import WebKit
 
 //Represents all the data and operations our app needs to do
     //If we're chatting with somebody, sending a new message, etc.
@@ -21,8 +22,7 @@ class AppStateModel: ObservableObject {
     @AppStorage("currentVenue") var currentVenue: String = "The Tombs" //added
 
     @Published var showingSignIn: Bool = true
-    @Published var currentGroup: [String] = [] //added
-    @Published var beerCounts: [Int] = [] //added
+    @Published var currentGroup: [GroupUser] = [] //added
     @Published var conversations: [String] = [] //can prob delete
     @Published var messages: [Message] = []
 
@@ -63,13 +63,13 @@ extension AppStateModel {
 
 extension AppStateModel {
     //change to create night
-    func createGroup() {
-        for user in currentGroup { //created for loop here
-            for member in currentGroup {
+    func createGroup(selected: [String]) {
+        for user in selected { //created for loop here
+            for member in selected {
                 database.collection("users")
                     .document(user)
                     .collection("groupMembers")
-                    .document(member).setData([ "beerCount": 0])
+                    .document(member).setData(["name": member, "beerCount": 0])
             }
             database.collection("users")
                 .document(user).setData(["inGroup": true], merge: true)
@@ -78,19 +78,23 @@ extension AppStateModel {
     
     //this listens for conversations to pop up in the chat view. So if someone starts a new chat, a new username will pop up that you can navigate to
     func getGroup() {
-        // Listen for conversations
- 
         conversationListener = database
             .collection("users")
             .document(currentUsername)//listen to the current users chats ; weak self prevents memory leak
-            .collection("groupMembers").addSnapshotListener { [weak self] snapshot, error in //chats to nights
-                guard let usernames = snapshot?.documents.compactMap({ $0.documentID }),
-                      error == nil else {
-                    return
-                }
-
-                DispatchQueue.main.async {
-                    self?.currentGroup = usernames
+            .collection("groupMembers").addSnapshotListener { [weak self] snapshot, error in
+                if error == nil {
+                    
+                    if let snapshot = snapshot {
+                        
+                        DispatchQueue.main.async {
+                            self?.currentGroup = snapshot.documents.map { data in
+                                return GroupUser(
+                                    name: data["name"] as? String ?? "",
+                                    beerCount: data["beerCount"] as? Int ?? 0
+                                )
+                            }
+                        }
+                    }
                 }
             }
     }
@@ -98,14 +102,14 @@ extension AppStateModel {
     func leaveGroup() {
         for user in currentGroup { //created for loop here
             database.collection("users")
-                .document(user)
+                .document(user.name)
                 .collection("groupMembers")
                 .document(currentUsername).delete()
-            if (currentUsername != user) {
+            if (currentUsername != user.name) {
                 database.collection("users")
                     .document(currentUsername)
                     .collection("groupMembers")
-                    .document(user).delete()
+                    .document(user.name).delete()
             }
         }
         
@@ -178,7 +182,7 @@ extension AppStateModel {
         //loop here forEach username in GCUsers
         for user in currentGroup {
             database.collection("users")
-                .document(user) // should be each user
+                .document(user.name) // should be each user
                 .collection("messages")
                 .document(newMessageId)
                 .setData(data)
@@ -219,7 +223,7 @@ extension AppStateModel {
             guard result != nil, error == nil else {
                 return
             }
-
+            
             self?.database
                 .collection("users")
                 .document(username)
@@ -254,22 +258,15 @@ extension AppStateModel {
     }
 }
 
-// Beer Count
+// Beer
 
 extension AppStateModel {
-    func getBeerCounts() {
-        beerListener = database.collection("users")
-            .document(currentUsername)
-            .collection("groupMembers")
-            .addSnapshotListener { [weak self] snapshot, error in
-                guard let beerCounts = snapshot?.documents.compactMap({$0.get("beerCount") as? Int }),
-                error == nil else {
-                    return
-                }
-                
-                DispatchQueue.main.async {
-                    self?.beerCounts = beerCounts
-                }
+    func increaseDrink() {
+        for user in currentGroup {
+            database.collection("users")
+                .document(user.name)
+                .collection("groupMembers")
+                .document(currentUsername).updateData(["beerCount": FieldValue.increment(Int64(1))])
         }
     }
 }

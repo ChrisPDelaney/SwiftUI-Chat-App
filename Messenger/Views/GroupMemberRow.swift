@@ -10,7 +10,7 @@ import SwiftUI
 struct GroupMemberRow: View {
     @EnvironmentObject var model: AppStateModel
     
-    let username: String
+    let user: GroupUser
         
     var body: some View {
         HStack {
@@ -20,7 +20,7 @@ struct GroupMemberRow: View {
                 .frame(width: 80, height: 80)
                 .clipShape(Circle())
             
-            Text(username)
+            Text(user.name)
                 .font(.title2)
                 .fontWeight(.bold)
             
@@ -30,7 +30,7 @@ struct GroupMemberRow: View {
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 50, height: 50)
-            Text("X7")
+            Text("X\(user.beerCount)")
                 .font(.title)
         }
         .padding()
@@ -39,6 +39,7 @@ struct GroupMemberRow: View {
 
 struct GroupMemberRow_Previews: PreviewProvider {
     static var previews: some View {
-        GroupMemberRow(username: "test")
+        let test = GroupUser(name: "", beerCount: 0)
+        GroupMemberRow(user: test)
     }
 }

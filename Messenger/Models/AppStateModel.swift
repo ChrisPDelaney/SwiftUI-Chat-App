@@ -98,7 +98,7 @@ extension AppStateModel {
                 }
             }
     }
-    
+        
     func leaveGroup() {
         for user in currentGroup { //created for loop here
             database.collection("users")

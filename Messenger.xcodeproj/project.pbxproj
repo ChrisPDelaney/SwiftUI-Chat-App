@@ -71,6 +71,34 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		6E416A512804A687001DCF24 /* Sign InUp */ = {
+			isa = PBXGroup;
+			children = (
+				833EE8F5262B1CBA004A9F9E /* SignInView.swift */,
+				833EE8F9262B1CC7004A9F9E /* SignUpView.swift */,
+			);
+			path = "Sign InUp";
+			sourceTree = "<group>";
+		};
+		6E416A522804A6B0001DCF24 /* Group */ = {
+			isa = PBXGroup;
+			children = (
+				6E8EEEB827FE2DED007CACFC /* GroupMemberRow.swift */,
+				6E8EEEBA27FE2E23007CACFC /* GroupHome.swift */,
+			);
+			path = Group;
+			sourceTree = "<group>";
+		};
+		6E416A532804A6CC001DCF24 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				833EE8FC262B1CD7004A9F9E /* ChatView.swift */,
+				833EE8FF262B1CE2004A9F9E /* ChatRow.swift */,
+				833EE905262B1CFE004A9F9E /* SendButton.swift */,
+			);
+			path = Chat;
+			sourceTree = "<group>";
+		};
 		6E8EEEBD27FE323E007CACFC /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,14 +148,10 @@
 		833EE8F2262B1C66004A9F9E /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				833EE8F5262B1CBA004A9F9E /* SignInView.swift */,
-				833EE8F9262B1CC7004A9F9E /* SignUpView.swift */,
-				833EE8FC262B1CD7004A9F9E /* ChatView.swift */,
-				6E8EEEB827FE2DED007CACFC /* GroupMemberRow.swift */,
-				6E8EEEBA27FE2E23007CACFC /* GroupHome.swift */,
+				6E416A532804A6CC001DCF24 /* Chat */,
+				6E416A522804A6B0001DCF24 /* Group */,
+				6E416A512804A687001DCF24 /* Sign InUp */,
 				2547150427F613C10019EF23 /* SearchView.swift */,
-				833EE8FF262B1CE2004A9F9E /* ChatRow.swift */,
-				833EE905262B1CFE004A9F9E /* SendButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";

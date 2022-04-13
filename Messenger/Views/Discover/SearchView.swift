@@ -40,7 +40,7 @@ struct SearchView: View {
     
     @State var searchPeople: Bool = false
 
-    @State var usernames: [String] = []
+    @State var users: [User] = []
     @State var venues: [String] = []
     
     var body: some View {//test comment
@@ -53,8 +53,8 @@ struct SearchView: View {
             }
 
             if (searchPeople) {
-                model.searchAllUsers(queryText: text) { usernames in
-                    self.usernames = usernames
+                model.searchAllUsers(queryText: text) { users in
+                    self.users = users
                 }
             }
             else {
@@ -73,13 +73,13 @@ struct SearchView: View {
                     searchPeople.toggle()
                     text = ""
                     venues = []
-                    usernames = []
+                    users = []
                 }
 
             List {
                 if (searchPeople) {
-                    ForEach(usernames, id: \.self) { name in //JP
-                        if name != model.currentUsername {
+                    ForEach(users, id: \.self) { user in //JP
+                        if user.name != model.currentUsername {
                             HStack {
                                 Image("photo1")
                                     .resizable()
@@ -87,7 +87,7 @@ struct SearchView: View {
                                     .frame(width: 55, height: 55)
                                     .clipShape(Circle())
 
-                                Text(name) //JP
+                                Text(user.name) //JP
                                     .font(.system(size: 24))
                             } //open up
                             .onTapGesture {

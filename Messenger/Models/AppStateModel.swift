@@ -58,17 +58,23 @@ extension AppStateModel {
         }
     }
     
-    func searchAllUsers(queryText: String, completion: @escaping ([String]) -> Void) {
-        database.collection("users").getDocuments { snapshot, error in //snapshot is the
-            guard let usernames = snapshot?.documents.compactMap({ $0.documentID }), //document id is the username
+    func searchAllUsers(queryText: String, completion: @escaping ([User]) -> Void) {
+        database.collection("users").getDocuments { snapshot, error in
+            guard let objects = snapshot?.documents.compactMap({ $0.data() }), //returns an array of dictionaries
                   error == nil else {
-                completion([])//if there's an error/something goes wrong in compeltion handler, pass back an empty array
                 return
             }
-
+            
+            let users: [User] = objects.compactMap({//taking the text, sender, and created pieces out, casting them to appropriate expected types
+                return User(
+                    name: $0["username"] as? String ?? "",
+                    friends: $0["friends"] as? [String] ?? []
+                )
+            })
+                        
             //filter usernames to prefix what you are searching
-            let filtered = usernames.filter({
-                $0.lowercased().hasPrefix(queryText.lowercased())
+            let filtered = users.filter({
+                $0.name.lowercased().hasPrefix(queryText.lowercased())
             })
 
             completion(filtered)
@@ -76,7 +82,7 @@ extension AppStateModel {
     }
     
     func searchVenues(queryText: String, completion: @escaping ([String]) -> Void) {
-        database.collection("venues").getDocuments { snapshot, error in //snapshot is the
+        database.collection("venues").getDocuments { snapshot, error in
             guard let venues = snapshot?.documents.compactMap({ $0.documentID }), //document id is the username
                   error == nil else {
                 completion([])//if there's an error/something goes wrong in compeltion handler, pass back an empty array

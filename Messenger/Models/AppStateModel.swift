@@ -41,7 +41,7 @@ class AppStateModel: ObservableObject {
 // Search
 
 extension AppStateModel {
-    func searchUsers(queryText: String, completion: @escaping ([String]) -> Void) {
+    func searchAvailableUsers(queryText: String, completion: @escaping ([String]) -> Void) {
         database.collection("users").whereField("inGroup", isLessThan: true).order(by: "inGroup").getDocuments { snapshot, error in //snapshot is the
             guard let usernames = snapshot?.documents.compactMap({ $0.documentID }), //document id is the username
                   error == nil else {
@@ -51,6 +51,40 @@ extension AppStateModel {
 
             //filter usernames to prefix what you are searching
             let filtered = usernames.filter({
+                $0.lowercased().hasPrefix(queryText.lowercased())
+            })
+
+            completion(filtered)
+        }
+    }
+    
+    func searchAllUsers(queryText: String, completion: @escaping ([String]) -> Void) {
+        database.collection("users").getDocuments { snapshot, error in //snapshot is the
+            guard let usernames = snapshot?.documents.compactMap({ $0.documentID }), //document id is the username
+                  error == nil else {
+                completion([])//if there's an error/something goes wrong in compeltion handler, pass back an empty array
+                return
+            }
+
+            //filter usernames to prefix what you are searching
+            let filtered = usernames.filter({
+                $0.lowercased().hasPrefix(queryText.lowercased())
+            })
+
+            completion(filtered)
+        }
+    }
+    
+    func searchVenues(queryText: String, completion: @escaping ([String]) -> Void) {
+        database.collection("venues").getDocuments { snapshot, error in //snapshot is the
+            guard let venues = snapshot?.documents.compactMap({ $0.documentID }), //document id is the username
+                  error == nil else {
+                completion([])//if there's an error/something goes wrong in compeltion handler, pass back an empty array
+                return
+            }
+
+            //filter usernames to prefix what you are searching
+            let filtered = venues.filter({
                 $0.lowercased().hasPrefix(queryText.lowercased())
             })
 
@@ -267,6 +301,15 @@ extension AppStateModel {
                 .document(user.name)
                 .collection("groupMembers")
                 .document(currentUsername).updateData(["beerCount": FieldValue.increment(Int64(1))])
+        }
+    }
+    
+    func resetDrink() {
+        for user in currentGroup {
+            database.collection("users")
+                .document(user.name)
+                .collection("groupMembers")
+                .document(currentUsername).setData(["beerCount": 0], merge: true)
         }
     }
 }

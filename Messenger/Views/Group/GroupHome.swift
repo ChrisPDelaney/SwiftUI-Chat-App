@@ -18,30 +18,28 @@ struct GroupHome: View {
         NavigationView {
             VStack {
                 ScrollView(.vertical) {
+                    if let user = model.currentGroup.first(where: {$0.name == model.currentUsername}) {
+                        CurrentUserRow(user: user)
+                    }
                     ForEach(model.currentGroup, id: \.self) { user in
-                        GroupMemberRow(user: user)
+                        if(user.name != model.currentUsername) {
+                            GroupMemberRow(user: user)
+                        }
                     }
                 }
                 HStack {
+                    Spacer()
                     NavigationLink( //Where you're linking to
                         destination: ChatView(),//destination is the user's view //JP FIX
-                        //model.currentGroup = selected, //retrieved from compeltion handler of SearchView //JP
+                        //model.currentGroup = selected, //retrieved from compeltion handler of SearchAddToGroup //JP
                         label: {
                             Image("chat")
                                 .resizable()
+                                .foregroundColor(.black)
                                 .scaledToFit()
                                 .frame(width: 65, height: 65)
                         }
                     )
-                    Spacer()
-                    Button( action: {
-                        model.increaseDrink()
-                    }) {
-                        Image("drink")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 65, height: 65)
-                    }
                 }
                 .padding()
             }
@@ -60,7 +58,7 @@ struct GroupHome: View {
                 //search bar
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink( //name will be the other user's name we tapped to start a convo with
-                        destination: SearchView { selected  in //JP
+                        destination: SearchAddToGroup { selected  in //JP
                             self.showSearch = false
 
                             //we want to wait for the search view to disappear before we try to show the chat view

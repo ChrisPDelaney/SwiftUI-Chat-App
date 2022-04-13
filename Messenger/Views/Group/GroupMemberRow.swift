@@ -1,5 +1,5 @@
 //
-//  NightOutMember.swift
+//  GroupMemberRow.swift
 //  After Five Prototype
 //
 //  Created by JP Mancini on 3/16/22.

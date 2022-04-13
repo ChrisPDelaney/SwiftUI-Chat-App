@@ -1,5 +1,5 @@
 //
-//  SearchView.swift
+//  SearchAddToGroup.swift
 //  Messenger
 //
 //  Created by Afraz Siddiqui on 4/17/21.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SearchView: View {
+struct SearchAddToGroup: View {
     
     //Allows you to dismiss given presentation by using this property wrapper
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -32,7 +32,7 @@ struct SearchView: View {
                 return
             }
 
-            model.searchUsers(queryText: text) { usernames in
+            model.searchAvailableUsers(queryText: text) { usernames in
                 self.usernames = usernames
             }
         })
@@ -99,9 +99,9 @@ struct SearchView: View {
     }
 }
 
-struct SearchView_Previews: PreviewProvider {
+struct SearchAddToGroup_Previews: PreviewProvider {
     static var previews: some View {
-        SearchView() { _  in }
+        SearchAddToGroup() { _  in }
             .preferredColorScheme(.dark)
     }
 }

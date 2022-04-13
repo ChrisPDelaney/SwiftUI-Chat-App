@@ -9,5 +9,5 @@ import Foundation
 
 struct User: Hashable, Codable {
     let name: String
-    let friends: [String]
+    let numFriends: Int
 }

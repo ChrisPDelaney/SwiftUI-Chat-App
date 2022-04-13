@@ -64,30 +64,42 @@ struct SearchView: View {
             }
         })
         
-        VStack {
-            TextField(searchPeople ? "Search people" : "Search venues", text: binding) //the text the user is typing in
-            .modifier(CustomField())
-            
-            ToggleItem(isOn: searchPeople)
-                .onTapGesture {
-                    searchPeople.toggle()
-                    text = ""
-                    venues = []
-                    users = []
-                }
+        NavigationView{
+            VStack {
+                TextField(searchPeople ? "Search people" : "Search venues", text: binding) //the text the user is typing in
+                .modifier(CustomField())
+                
+                ToggleItem(isOn: searchPeople)
+                    .onTapGesture {
+                        searchPeople.toggle()
+                        text = ""
+                        venues = []
+                        users = []
+                    }
 
-            List {
-                if (searchPeople) {
-                    ForEach(users, id: \.self) { user in //JP
-                        if user.name != model.currentUsername {
+                List {
+                    if (searchPeople) {
+                        ForEach(users, id: \.self) { user in //JP
+                            if user.name != model.currentUsername {
+                                NavigationLink(
+                                    destination: userProfile(user: user),
+                                    label: {
+                                        UserSearchRow(user: user)
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    else {
+                        ForEach(venues, id: \.self) { venue in //JP
                             HStack {
-                                Image("photo1")
+                                Image("photo2")
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
                                     .frame(width: 55, height: 55)
                                     .clipShape(Circle())
 
-                                Text(user.name) //JP
+                                Text(venue) //JP
                                     .font(.system(size: 24))
                             } //open up
                             .onTapGesture {
@@ -96,24 +108,9 @@ struct SearchView: View {
                         }
                     }
                 }
-                else {
-                    ForEach(venues, id: \.self) { venue in //JP
-                        HStack {
-                            Image("photo2")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 55, height: 55)
-                                .clipShape(Circle())
-
-                            Text(venue) //JP
-                                .font(.system(size: 24))
-                        } //open up
-                        .onTapGesture {
-                            print("aloha")
-                        }
-                    }
-                }
             }
+            .navigationBarTitle("")
+            .navigationBarHidden(true)
         }
     }
 }

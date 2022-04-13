@@ -68,7 +68,7 @@ extension AppStateModel {
             let users: [User] = objects.compactMap({//taking the text, sender, and created pieces out, casting them to appropriate expected types
                 return User(
                     name: $0["username"] as? String ?? "",
-                    friends: $0["friends"] as? [String] ?? []
+                    numFriends: $0["numFriends"] as? Int ?? 0
                 )
             })
                         
@@ -84,7 +84,7 @@ extension AppStateModel {
     func searchVenues(queryText: String, completion: @escaping ([String]) -> Void) {
         database.collection("venues").getDocuments { snapshot, error in
             guard let venues = snapshot?.documents.compactMap({ $0.documentID }), //document id is the username
-                  error == nil else {
+            error == nil else {
                 completion([])//if there's an error/something goes wrong in compeltion handler, pass back an empty array
                 return
             }
@@ -270,7 +270,8 @@ extension AppStateModel {
                 .setData([
                     "email": email,
                     "username": username,
-                    "inGroup": false
+                    "inGroup": false,
+                    "numFriends": 0
                 ]) { error in
                     guard error == nil else {
                         return
@@ -317,5 +318,25 @@ extension AppStateModel {
                 .collection("groupMembers")
                 .document(currentUsername).setData(["beerCount": 0], merge: true)
         }
+    }
+}
+
+// Friends
+
+extension AppStateModel {
+    func requestFriend(username: String) {
+        database.collection("users")
+            .document(currentUsername)
+            .collection("sentRequests")
+            .document(username).setData(["isCreated": true])
+        
+        database.collection("users")
+            .document(username)
+            .collection("recievedRequests")
+            .document(currentUsername).setData(["isCreated": true])
+    }
+    
+    func checkRequested(username: String) {
+        
     }
 }

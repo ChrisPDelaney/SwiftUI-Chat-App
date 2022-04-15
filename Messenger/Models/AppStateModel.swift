@@ -336,7 +336,39 @@ extension AppStateModel {
             .document(currentUsername).setData(["isCreated": true])
     }
     
-    func checkRequested(username: String, completion: @escaping (Bool) -> Void) {
+    func acceptRequest(username: String) {
+        removeRequest(username: username)
+        
+        database.collection("users")
+            .document(currentUsername)
+            .collection("friends")
+            .document(username).setData(["isCreated": true])
+        
+        database.collection("users")
+            .document(username)
+            .collection("friends")
+            .document(currentUsername).setData(["isCreated": true])
+        
+        database.collection("users")
+            .document(currentUsername).updateData(["numFriends": FieldValue.increment(Int64(1))])
+        
+        database.collection("users")
+            .document(username).updateData(["numFriends": FieldValue.increment(Int64(1))])
+    }
+    
+    func removeRequest(username: String) {
+        database.collection("users")
+            .document(currentUsername)
+            .collection("recievedRequests")
+            .document(username).delete()
+        
+        database.collection("users")
+            .document(username)
+            .collection("sentRequests")
+            .document(currentUsername).delete()
+    }
+    
+    func checkSentRequest(username: String, completion: @escaping (Bool) -> Void) {
         var requested: Bool = false
         database.collection("users")
             .document(currentUsername)
@@ -348,6 +380,24 @@ extension AppStateModel {
             }
 
             if requests.contains(where: { $0 == username }) {
+                requested = true
+            }
+            completion(requested)
+        }
+    }
+    
+    func checkReceivedRequest(username: String, completion: @escaping (Bool) -> Void) {
+        var requested: Bool = false
+        database.collection("users")
+            .document(username)
+            .collection("sentRequests")
+            .getDocuments { snapshot, error in
+            guard let requests = snapshot?.documents.compactMap({ $0.documentID }), //document id is the username
+            error == nil else {
+                return
+            }
+
+                if requests.contains(where: { $0 == self.currentUsername }) {
                 requested = true
             }
             completion(requested)

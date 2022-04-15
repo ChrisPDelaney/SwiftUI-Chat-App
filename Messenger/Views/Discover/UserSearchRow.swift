@@ -21,8 +21,5 @@ struct UserSearchRow: View {
             Text(user.name) //JP
                 .font(.system(size: 24))
         } //open up
-        .onTapGesture {
-            print("aloha")
-        }
     }
 }

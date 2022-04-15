@@ -336,7 +336,21 @@ extension AppStateModel {
             .document(currentUsername).setData(["isCreated": true])
     }
     
-    func checkRequested(username: String) {
-        
+    func checkRequested(username: String, completion: @escaping (Bool) -> Void) {
+        var requested: Bool = false
+        database.collection("users")
+            .document(currentUsername)
+            .collection("sentRequests")
+            .getDocuments { snapshot, error in
+            guard let requests = snapshot?.documents.compactMap({ $0.documentID }), //document id is the username
+            error == nil else {
+                return
+            }
+
+            if requests.contains(where: { $0 == username }) {
+                requested = true
+            }
+            completion(requested)
+        }
     }
 }

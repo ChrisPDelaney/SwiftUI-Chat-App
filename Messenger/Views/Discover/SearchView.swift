@@ -39,7 +39,7 @@ struct SearchView: View {
     @State var text: String = ""
     
     @State var searchPeople: Bool = false
-
+    
     @State var users: [User] = []
     @State var venues: [String] = []
     

@@ -116,6 +116,33 @@ extension AppStateModel {
         }
     }
     
+    func addToGroup(selected: [String]) {
+        for user in selected { //created for loop here
+            for member in selected {
+                database.collection("users")
+                    .document(user)
+                    .collection("groupMembers")
+                    .document(member).setData(["name": member, "beerCount": 0])
+            }
+            for currentMember in currentGroup {
+                database.collection("users")
+                    .document(user)
+                    .collection("groupMembers")
+                    .document(currentMember.name).setData(["name": currentMember.name, "beerCount": 0])
+            }
+            database.collection("users")
+                .document(user).setData(["inGroup": true], merge: true)
+        }
+        for user in currentGroup {
+            for member in selected {
+                database.collection("users")
+                    .document(user.name)
+                    .collection("groupMembers")
+                    .document(member).setData(["name": member, "beerCount": 0])
+            }
+        }
+    }
+    
     //this listens for conversations to pop up in the chat view. So if someone starts a new chat, a new username will pop up that you can navigate to
     func getGroup() {
         conversationListener = database

@@ -368,6 +368,24 @@ extension AppStateModel {
             .document(currentUsername).delete()
     }
     
+    func checkFriend(username: String, completion: @escaping (Bool) -> Void) {
+        var friended: Bool = false
+        database.collection("users")
+            .document(currentUsername)
+            .collection("friends")
+            .getDocuments { snapshot, error in
+            guard let friends = snapshot?.documents.compactMap({ $0.documentID }), //document id is the username
+            error == nil else {
+                return
+            }
+
+            if friends.contains(where: { $0 == username }) {
+                friended = true
+            }
+            completion(friended)
+        }
+    }
+    
     func checkSentRequest(username: String, completion: @escaping (Bool) -> Void) {
         var requested: Bool = false
         database.collection("users")

@@ -31,7 +31,16 @@ struct userProfile: View {
             Text("\(user.numFriends) Friends") //mutuals
                 .font(.title2)
             
-            if sentRequest {
+            if isFriend {
+                Text("Current Friend")
+                    .font(.title)
+                    .foregroundColor(.black)
+                    .frame(maxWidth: .infinity, maxHeight: 50)
+                    .border(Color.black, width: 1)
+                .padding(.horizontal, 10)
+                .padding(.top, 10)
+            }
+            else if sentRequest {
                 Text("Requested")
                     .font(.title)
                     .foregroundColor(.black)
@@ -85,6 +94,9 @@ struct userProfile: View {
             Spacer()
         }
         .onAppear{
+            model.checkFriend(username: user.name) { friended in
+                self.isFriend = friended
+            }
             model.checkSentRequest(username: user.name) { requested in
                 self.sentRequest = requested
             }

@@ -13,14 +13,24 @@ struct SignUpView: View {
     @State var password: String = ""
 
     @EnvironmentObject var model: AppStateModel
+    
+    //For profile image
+    @State var showImagePicker: Bool = false
+    @State var image: Image = Image(systemName: "person.circle.fill")
+    @State var imageData: Data = Data()
+    
 
     var body: some View {
         VStack {
             // Heading
-            Image("logo")
+            image
                 .resizable()
-                .aspectRatio(contentMode: .fit)
+                .aspectRatio(contentMode: .fill)
                 .frame(width: 120, height: 120)
+                .clipShape(Circle())
+                .onTapGesture {
+                    self.showImagePicker = true
+                }
 
             // Textfields
 
@@ -54,6 +64,10 @@ struct SignUpView: View {
 
             Spacer()
         }
+        .sheet(isPresented: $showImagePicker){
+            ImagePicker(showImagePicker: self.$showImagePicker, pickedImage: self.$image,
+                        imageData: self.$imageData)
+        }
         .navigationBarTitle("Create Account", displayMode: .inline)
     }
 
@@ -65,7 +79,7 @@ struct SignUpView: View {
             return
         }
 
-        model.signUp(email: email, username: username, password: password)
+        model.signUp(email: email, username: username, password: password, imageData: imageData)
     }
 }
 

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct userProfile: View {
+struct UserProfile: View {
     @EnvironmentObject var model: AppStateModel
     
     @State private var isFriend: Bool = false

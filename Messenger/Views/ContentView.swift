@@ -34,7 +34,7 @@ struct ContentView: View {
                     Image(systemName: "house.fill")
                 }
                 .tag(Tab.group)
-            DiscoverHome()
+            ProfileView()
                 .tabItem {
                     Image(systemName: "person.crop.circle")
                 }

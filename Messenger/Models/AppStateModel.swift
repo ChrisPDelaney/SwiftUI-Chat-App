@@ -10,6 +10,8 @@ import SwiftUI
 
 import FirebaseAuth
 import FirebaseFirestore
+//import FirebaseStorage
+
 import WebKit
 
 //Represents all the data and operations our app needs to do
@@ -117,6 +119,8 @@ extension AppStateModel {
     }
     
     func addToGroup(selected: [String]) {
+
+        print("ENTERED FUNCTION")
         for user in selected { //created for loop here
             for member in selected {
                 database.collection("users")
@@ -134,6 +138,13 @@ extension AppStateModel {
                 .document(user).setData(["inGroup": true], merge: true)
         }
         for user in currentGroup {
+            print("")
+            print("")
+            print("")
+            print(user.name)
+            print("")
+            print("")
+            print("")
             for member in selected {
                 database.collection("users")
                     .document(user.name)
@@ -284,12 +295,14 @@ extension AppStateModel {
         }
     }
 
-    func signUp(email: String, username: String, password: String) {
+    func signUp(email: String, username: String, password: String, imageData: Data) {
         // Create Account
         auth.createUser(withEmail: email, password: password) { [weak self] result, error in
             guard result != nil, error == nil else {
                 return
             }
+            
+            //let storageRoot = Storage.storage().re
             
             self?.database
                 .collection("users")

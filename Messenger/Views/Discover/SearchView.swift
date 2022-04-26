@@ -82,7 +82,7 @@ struct SearchView: View {
                         ForEach(users, id: \.self) { user in //JP
                             if user.name != model.currentUsername {
                                 NavigationLink(
-                                    destination: userProfile(user: user),
+                                    destination: UserProfile(user: user),
                                     label: {
                                         UserSearchRow(user: user)
                                     }

@@ -49,15 +49,15 @@ struct GroupHome: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Menu {
                         NavigationLink( //name will be the other user's name we tapped to start a convo with
-                            destination: SearchAddToGroup { selected  in //JP
-                                self.showSearch = false
-
-                                //we want to wait for the search view to disappear before we try to show the chat view
-                                DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those //Consider changing
-                                    self.showChat = true //breakpoint
-                                    model.addToGroup(selected: selected)
-                                }
-                            },
+                            destination: ProfileView(), //{ //selected  in //JP
+//                                self.showSearch = false
+//
+//                                //we want to wait for the search view to disappear before we try to show the chat view
+//                                DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those //Consider changing
+//                                    self.showChat = true //breakpoint
+//                                    //model.addToGroup(selected: selected)
+//                                }
+                           // },
                             isActive: $showSearch,
                             label: {
                                 Text("Add Members to Group")
@@ -102,10 +102,14 @@ struct GroupHome: View {
                     NavigationLink( //name will be the other user's name we tapped to start a convo with
                         destination: SearchAddToGroup { selected  in //JP
                             self.showSearch = false
-
+                            print("before dispatch queue")
                             //we want to wait for the search view to disappear before we try to show the chat view
                             DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those //Consider changing
+                                print("In dispatch queue")
                                 self.showChat = true //breakpoint
+                                print("")
+                                print("DSKLFJDKSJL:FJKLSDF")
+                                print("")
                                 model.createGroup(selected: selected)
                             }
                         },

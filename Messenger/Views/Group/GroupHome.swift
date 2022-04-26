@@ -48,75 +48,41 @@ struct GroupHome: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Menu {
-                        NavigationLink( //name will be the other user's name we tapped to start a convo with
-                            destination: ProfileView(), //{ //selected  in //JP
-//                                self.showSearch = false
-//
-//                                //we want to wait for the search view to disappear before we try to show the chat view
-//                                DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those //Consider changing
-//                                    self.showChat = true //breakpoint
-//                                    //model.addToGroup(selected: selected)
-//                                }
-                           // },
-                            isActive: $showSearch,
-                            label: {
-                                Text("Add Members to Group")
-                            }
-                        )
+                        Button(action: {
+                            self.showSearch = true
+                        }) {
+                            Text("Add Members to Group")
+                        }
                         if #available(iOS 15.0, *) {
                             Button(role: .destructive, action: {
                                 model.leaveGroup()
                             }) {
                                 Text("Leave Group")
-                                    .foregroundColor(.red)
                             }
                         } else {
                             Button(action: {
                                 model.leaveGroup()
                             }) {
                                 Text("Leave Group")
-                                    .foregroundColor(.red)
                             }                        }
                         if #available(iOS 15.0, *) {
                             Button(role: .destructive, action: {
                                 model.signOut()
                             }) {
                                 Text("Sign Out")
-                                    .foregroundColor(.red)
                             }
                         } else {
                             Button(action: {
                                 model.signOut()
                             }) {
                                 Text("Sign Out")
-                                    .foregroundColor(.red)
-                            }                        }
+                            }
+                        }
                     }
                     label: {
                         Label("Options", systemImage: "ellipsis")
                             .foregroundColor(.black)
                     }
-                }
-                //search bar
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink( //name will be the other user's name we tapped to start a convo with
-                        destination: SearchAddToGroup { selected  in //JP
-                            self.showSearch = false
-                            print("before dispatch queue")
-                            //we want to wait for the search view to disappear before we try to show the chat view
-                            DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those //Consider changing
-                                print("In dispatch queue")
-                                self.showChat = true //breakpoint
-                                print("")
-                                print("DSKLFJDKSJL:FJKLSDF")
-                                print("")
-                                model.createGroup(selected: selected)
-                            }
-                        },
-                        isActive: $showSearch,
-                        label: {
-                            Image(systemName: "magnifyingglass")
-                        })
                 }
             }
             .fullScreenCover(isPresented: $model.showingSignIn, content: {
@@ -130,6 +96,19 @@ struct GroupHome: View {
                 
                 model.getGroup()
             }
+            .background(
+                NavigationLink( //name will be the other user's name we tapped to start a convo with
+                    destination: SearchAddToGroup { selected  in //JP
+                        self.showSearch = false
+
+                        //we want to wait for the search view to disappear before we try to show the chat view
+                        DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those //Consider changing
+                            model.addToGroup(selected: selected)
+                        }
+                    },
+                    isActive: $showSearch
+                ) { EmptyView() }
+            )
         }
     }
 

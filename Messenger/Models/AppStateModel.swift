@@ -20,19 +20,20 @@ import WebKit
 class AppStateModel: ObservableObject {
     @AppStorage("currentUsername") var currentUsername: String = ""
     @AppStorage("currentEmail") var currentEmail: String = ""
+    @AppStorage("profileUrl") var profileUrl: String = ""
+    @AppStorage("currentNumFriends") var currentNumFriends: Int = 0
+    
     @AppStorage("currentDate") var currentDate: String = "2022-01-27" //added
     @AppStorage("currentVenue") var currentVenue: String = "The Tombs" //added
-    @AppStorage("profileUrl") var profileUrl: String = ""
-
+    
     @Published var showingSignIn: Bool = true
-    @Published var currentGroup: [GroupUser] = [] //added
-    @Published var conversations: [String] = [] //can prob delete
+    @Published var currentGroup: [GroupUser] = []
     @Published var messages: [Message] = []
 
     let database = Firestore.firestore()
     let auth = Auth.auth()
 
-    var conversationListener: ListenerRegistration?
+    var groupListener: ListenerRegistration?
     var chatListener: ListenerRegistration?
     var beerListener: ListenerRegistration?
 
@@ -157,9 +158,8 @@ extension AppStateModel {
         }
     }
     
-    //this listens for conversations to pop up in the chat view. So if someone starts a new chat, a new username will pop up that you can navigate to
     func getGroup() {
-        conversationListener = database
+        groupListener = database
             .collection("users")
             .document(currentUsername)//listen to the current users chats ; weak self prevents memory leak
             .collection("groupMembers").addSnapshotListener { [weak self] snapshot, error in
@@ -281,6 +281,14 @@ extension AppStateModel {
             guard let email = snapshot?.data()?["email"] as? String, error == nil else {
                 return
             }
+            
+            guard let url = snapshot?.data()?["profileUrl"] as? String, error == nil else {
+                return
+            }
+            
+            guard let numFriends = snapshot?.data()?["numFriends"] as? Int, error == nil else {
+                return
+            }
 
             // Try to sign in
             self?.auth.signIn(withEmail: email, password: password, completion: { result, error in
@@ -291,6 +299,8 @@ extension AppStateModel {
                 DispatchQueue.main.async {
                     self?.currentEmail = email
                     self?.currentUsername = username
+                    self?.profileUrl = url
+                    self?.currentNumFriends = numFriends
                     self?.showingSignIn = false
                     self?.currentGroup = []
                 }

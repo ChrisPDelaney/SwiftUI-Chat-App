@@ -72,14 +72,16 @@ struct SignUpView: View {
     }
 
     func signUp() {
+        print("Sign Up:")
+        print(imageData)
         guard !username.trimmingCharacters(in: .whitespaces).isEmpty,
               !password.trimmingCharacters(in: .whitespaces).isEmpty,
               !email.trimmingCharacters(in: .whitespaces).isEmpty,
               password.count >= 6 else {
             return
         }
-
         model.signUp(email: email, username: username, password: password, imageData: imageData)
+        print("goes past sign up function")
     }
 }
 

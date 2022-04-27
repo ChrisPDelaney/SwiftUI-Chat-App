@@ -3,13 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		2547150527F613C10019EF23 /* SearchAddToGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2547150427F613C10019EF23 /* SearchAddToGroup.swift */; };
 		255BD75C27E2582D0097B2D0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 255BD75B27E2582D0097B2D0 /* GoogleService-Info.plist */; };
 		25B50DC528174B6600BFEDCF /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B50DC428174B6600BFEDCF /* ImagePicker.swift */; };
+		25B50DC92819A95B00BFEDCF /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 25B50DC82819A95B00BFEDCF /* URLImage */; };
 		6E416A562804AC2F001DCF24 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E416A552804AC2F001DCF24 /* ProfileView.swift */; };
 		6E52B8C028070DDC00A5D729 /* CurrentUserRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E52B8BF28070DDC00A5D729 /* CurrentUserRow.swift */; };
 		6E52B8C228074DA100A5D729 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E52B8C128074DA100A5D729 /* ContentView.swift */; };
@@ -71,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25B50DC92819A95B00BFEDCF /* URLImage in Frameworks */,
 				BE9310123767B7B6321F0B43 /* Pods_Messenger.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -251,6 +253,9 @@
 			dependencies = (
 			);
 			name = Messenger;
+			packageProductDependencies = (
+				25B50DC82819A95B00BFEDCF /* URLImage */,
+			);
 			productName = Messenger;
 			productReference = 833EE8DF262B1C48004A9F9E /* Messenger.app */;
 			productType = "com.apple.product-type.application";
@@ -278,6 +283,9 @@
 				Base,
 			);
 			mainGroup = 833EE8D6262B1C48004A9F9E;
+			packageReferences = (
+				25B50DC72819A95B00BFEDCF /* XCRemoteSwiftPackageReference "url-image" */,
+			);
 			productRefGroup = 833EE8E0262B1C48004A9F9E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -558,6 +566,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		25B50DC72819A95B00BFEDCF /* XCRemoteSwiftPackageReference "url-image" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dmytro-anokhin/url-image";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		25B50DC82819A95B00BFEDCF /* URLImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 25B50DC72819A95B00BFEDCF /* XCRemoteSwiftPackageReference "url-image" */;
+			productName = URLImage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 833EE8D7262B1C48004A9F9E /* Project object */;
 }

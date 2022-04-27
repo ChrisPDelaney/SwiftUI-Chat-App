@@ -10,7 +10,7 @@ import SwiftUI
 
 import FirebaseAuth
 import FirebaseFirestore
-//import FirebaseStorage
+import FirebaseStorage
 
 import WebKit
 
@@ -22,6 +22,7 @@ class AppStateModel: ObservableObject {
     @AppStorage("currentEmail") var currentEmail: String = ""
     @AppStorage("currentDate") var currentDate: String = "2022-01-27" //added
     @AppStorage("currentVenue") var currentVenue: String = "The Tombs" //added
+    @AppStorage("profileUrl") var profileUrl: String = ""
 
     @Published var showingSignIn: Bool = true
     @Published var currentGroup: [GroupUser] = [] //added
@@ -35,6 +36,8 @@ class AppStateModel: ObservableObject {
     var chatListener: ListenerRegistration?
     var beerListener: ListenerRegistration?
 
+    
+    //immediatley when the app is opened, it che
     init() {
         self.showingSignIn = Auth.auth().currentUser == nil
     }
@@ -294,39 +297,69 @@ extension AppStateModel {
             })
         }
     }
-
     func signUp(email: String, username: String, password: String, imageData: Data) {
         // Create Account
+        print("ENTERS FUNCTION")
         auth.createUser(withEmail: email, password: password) { [weak self] result, error in
             guard result != nil, error == nil else {
+                print("Error Here:")
+                print(error)
                 return
             }
             
-            //let storageRoot = Storage.storage().re
-            
-            self?.database
-                .collection("users")
-                .document(username)
-                .setData([
-                    "email": email,
-                    "username": username,
-                    "inGroup": false,
-                    "numFriends": 0
-                ]) { error in
-                    guard error == nil else {
-                        return
-                    }
 
-                    DispatchQueue.main.async {
-                        self?.currentUsername = username
-                        self?.currentEmail = email
-                        self?.showingSignIn = false
-                        self?.currentGroup = []
+            let storageRoot = Storage.storage().reference(forURL: "gs://messenger-swift-ui-7d80e.appspot.com")
+            let usernameStorage = storageRoot.child("users")
+            let userStorage = usernameStorage.child(username)
+            let profilePic = userStorage.child("profile_pic")
+            let metadata = StorageMetadata()
+            metadata.contentType = "image/jpg"
+            print("Image data:")
+            print(imageData)
+            
+            print(profilePic)
+            profilePic.putData(imageData, metadata: metadata) { (storageMetadata, error) in
+                if error != nil {
+                    print("Error Here:")
+                    print(error)
+                }
+                print("inside profile put data")
+                profilePic.downloadURL{ (url, error) in
+                    print("enters download URL")
+                    //maybe put change request in here later
+                    if let metaImageUrl = url?.absoluteString {
+                        if let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest() {
+                            changeRequest.photoURL = url
+                            changeRequest.displayName = username
+                            changeRequest.commitChanges{ (error) in
+                                if error != nil {
+                                    print("ERROR IN CHANGE REQUEST COMMIT CHANGES")
+                                    return
+                                }
+                            }
+                        }
+                        
+                        self?.database.collection("users").document(username).setData([
+                                    "email": email,
+                                    "username": username,
+                                    "inGroup": false,
+                                    "numFriends": 0,
+                                    "profileUrl": metaImageUrl ]) { error in
+                                        guard error == nil else { return }
+                                        DispatchQueue.main.async {
+                                        self?.currentUsername = username
+                                        self?.currentEmail = email
+                                        self?.showingSignIn = false
+                                        self?.profileUrl = metaImageUrl
+                                        self?.currentGroup = []
+                                    }
+                                }
+                        print("reaches end of meta image url function")
                     }
                 }
+            }
         }
-
-    }
+}
 
     func signOut() {
         do {

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import URLImage
 
 struct ProfileView: View {
     @EnvironmentObject var model: AppStateModel
@@ -25,14 +26,16 @@ struct ProfileView: View {
                     Spacer()
                 }
                 .padding(.horizontal, 25)
-                            
-                image.resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 245, height: 245)
-                    .clipShape(Circle())
-                    .onTapGesture {
-                        self.showImagePicker = true
-                    }
+                     
+                
+                URLImage(URL(string: model.profileUrl)! ) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 245, height: 245)
+                        .clipShape(Circle())
+                }
+
                 
                 Text(model.currentUsername) //name
                     .font(.title)

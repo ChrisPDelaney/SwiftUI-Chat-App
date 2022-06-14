@@ -18,7 +18,7 @@ struct ProfileView: View {
     @State var showImagePicker: Bool = false
     @State var image: Image = Image(systemName: "person.crop.circle.badge.plus")
     @State var imageData: Data = Data()
-    
+        
     var body: some View {
         
             VStack {
@@ -27,7 +27,6 @@ struct ProfileView: View {
                 }
                 .padding(.horizontal, 25)
                      
-                
                 URLImage(URL(string: model.profileUrl)! ) { image in
                     image
                         .resizable()
@@ -41,18 +40,12 @@ struct ProfileView: View {
                     .font(.title)
                     .fontWeight(.bold)
                 
-                Text("37 Mutuals") //mutuals
+                Text("\(model.currentNumFriends) Mutuals") //mutuals
                     .font(.title2)
                 
             }.sheet(isPresented: $showImagePicker){
                 ImagePicker(showImagePicker: self.$showImagePicker, pickedImage: self.$image,
                             imageData: self.$imageData)
         }
-    }
-}
-
-struct ProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        ProfileView()
     }
 }

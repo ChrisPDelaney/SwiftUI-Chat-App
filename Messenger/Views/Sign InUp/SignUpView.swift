@@ -19,6 +19,7 @@ struct SignUpView: View {
     @State var image: Image = Image(systemName: "person.circle.fill")
     @State var imageData: Data = Data()
     
+    let imageModel: UIImage = UIImage(systemName: "person.circle.fill") ?? UIImage()
 
     var body: some View {
         VStack {
@@ -31,6 +32,9 @@ struct SignUpView: View {
                 .onTapGesture {
                     self.showImagePicker = true
                     
+                }
+                .onAppear {
+                    imageData = self.imageModel.jpegData(compressionQuality: 0.05) ?? Data()
                 }
 
             // Textfields

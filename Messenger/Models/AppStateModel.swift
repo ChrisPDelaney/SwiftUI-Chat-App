@@ -39,7 +39,12 @@ class AppStateModel: ObservableObject {
     
     //immediatley when the app is opened, it che
     init() {
+        print("In initialization")
+        let userEmail = Auth.auth().currentUser?.email
+        print(userEmail)
+        print(currentUsername)
         self.showingSignIn = Auth.auth().currentUser == nil
+        print(self.showingSignIn)
     }
 }
 
@@ -159,6 +164,10 @@ extension AppStateModel {
     
     //this listens for conversations to pop up in the chat view. So if someone starts a new chat, a new username will pop up that you can navigate to
     func getGroup() {
+        print("Inside the get group function")
+        print("Current user name is :")
+        print(currentUsername)
+        print("The profile URL is: \(profileUrl)" )
         conversationListener = database
             .collection("users")
             .document(currentUsername)//listen to the current users chats ; weak self prevents memory leak

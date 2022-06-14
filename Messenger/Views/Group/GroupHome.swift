@@ -90,11 +90,13 @@ struct GroupHome: View {
             })
             .onAppear {
                 //make sure the user is signed in, don't want to get conversations if there's no user
+                print("BEFORE RETURNING CURRENT USER IN GROUP HOME")
                 guard model.auth.currentUser != nil else {
+                    print("There is no current user")
                     return
                 }
-                
                 model.getGroup()
+                print("MODEL.GETGROUP EXECUTED")
             }
             .background(
                 NavigationLink( //name will be the other user's name we tapped to start a convo with

@@ -22,9 +22,9 @@ struct MessengerApp: App {
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-
+        print("APP ABOUT TO CONFIGURE")
         FirebaseApp.configure()
-
+        print("APP CONFIGURED")
         return true
     }
 }

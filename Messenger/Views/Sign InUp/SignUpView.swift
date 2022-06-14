@@ -30,6 +30,7 @@ struct SignUpView: View {
                 .clipShape(Circle())
                 .onTapGesture {
                     self.showImagePicker = true
+                    
                 }
 
             // Textfields
@@ -65,8 +66,9 @@ struct SignUpView: View {
             Spacer()
         }
         .sheet(isPresented: $showImagePicker){
+            
             ImagePicker(showImagePicker: self.$showImagePicker, pickedImage: self.$image,
-                        imageData: self.$imageData)
+                        imageData: self.$imageData, sourceType: .camera)
         }
         .navigationBarTitle("Create Account", displayMode: .inline)
     }

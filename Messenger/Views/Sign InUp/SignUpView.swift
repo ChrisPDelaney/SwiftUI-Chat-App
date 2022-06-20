@@ -31,10 +31,6 @@ struct SignUpView: View {
                 .clipShape(Circle())
                 .onTapGesture {
                     self.showImagePicker = true
-                    
-                }
-                .onAppear {
-                    imageData = self.imageModel.jpegData(compressionQuality: 0.05) ?? Data()
                 }
 
             // Textfields
@@ -70,9 +66,8 @@ struct SignUpView: View {
             Spacer()
         }
         .sheet(isPresented: $showImagePicker){
-            
             ImagePicker(showImagePicker: self.$showImagePicker, pickedImage: self.$image,
-                        imageData: self.$imageData, sourceType: .camera)
+                        imageData: self.$imageData)
         }
         .navigationBarTitle("Create Account", displayMode: .inline)
     }
@@ -83,12 +78,13 @@ struct SignUpView: View {
         guard !username.trimmingCharacters(in: .whitespaces).isEmpty,
               !password.trimmingCharacters(in: .whitespaces).isEmpty,
               !email.trimmingCharacters(in: .whitespaces).isEmpty,
-              password.count >= 6 else {
+              password.count >= 6,
+              !imageData.isEmpty else {
             return
         }
-        model.signUp(email: email, username: username, password: password, imageData: imageData)
-        print("goes past sign up function")
+        //model.signUp(email: email, username: username, password: password, imageData: imageData)
     }
+    
 }
 
 struct SignUpView_Previews: PreviewProvider {

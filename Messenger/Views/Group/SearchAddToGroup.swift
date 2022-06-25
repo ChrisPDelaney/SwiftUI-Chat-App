@@ -14,7 +14,8 @@ struct SearchAddToGroup: View {
     @EnvironmentObject var model: AppStateModel
     @State var text: String = ""
 
-    @State var usernames: [String] = []
+    @State var usernames_available: [String] = []
+    @State var usernames_unavailable: [String] = []
     @State var selected: [String] = []
         
     let completion: (([String]) -> Void)
@@ -33,16 +34,19 @@ struct SearchAddToGroup: View {
             }
 
             model.searchAvailableUsers(queryText: text) { usernames in
-                self.usernames = usernames
+                self.usernames_available = usernames
+            }
+            
+            model.searchUnavailableUsers(queryText: text) { usernames in
+                self.usernames_unavailable = usernames
             }
         })
-        
         VStack {
             TextField("Username...", text: binding) //the text the user is typing in
             .modifier(CustomField())
 
             List {
-                ForEach(usernames, id: \.self) { name in //JP
+                ForEach(usernames_available, id: \.self) { name in //JP
                     if name != model.currentUsername {
                         HStack {
                             Image("photo1")
@@ -69,6 +73,29 @@ struct SearchAddToGroup: View {
                                 selected.append(name)
                             }
                         }
+                    }
+                }
+                
+                ForEach(usernames_unavailable, id: \.self) { name in //JP
+                    if name != model.currentUsername {
+                        HStack {
+                            Image("photo1")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 55, height: 55)
+                                .clipShape(Circle())
+
+                            Text(name) //JP
+                                .font(.system(size: 24))
+                                    
+                            Spacer()
+                            
+                            Image(systemName: "xmark.circle")
+                                .resizable()
+                                .foregroundColor(.blue)
+                                .padding()
+                                .frame(width: 55, height: 55)
+                        } //open up
                     }
                 }
             }

@@ -84,6 +84,15 @@ struct GroupHome: View {
                             .foregroundColor(.black)
                     }
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(
+                        destination: NotificationView(),
+                        label: {
+                            Image(systemName: "bell")
+                                .foregroundColor(.black)
+                        }
+                    )
+                }
             }
             .fullScreenCover(isPresented: $model.showingSignIn, content: {
                 SignInView()
@@ -116,11 +125,5 @@ struct GroupHome: View {
 
     func signOut() {
         model.signOut()
-    }
-}
-
-struct GroupHomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        GroupHome()
     }
 }

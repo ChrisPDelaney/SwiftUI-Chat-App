@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct NotificationRow: View {
-    //let user: User
+    @EnvironmentObject var model: AppStateModel
+    let name: String
     
     var body: some View {
         HStack {
@@ -18,13 +19,13 @@ struct NotificationRow: View {
                 .frame(width: 55, height: 55)
                 .clipShape(Circle())
 
-            Text("user.name sent you a friend request") //JP
+            Text("\(name) sent you a friend request") //JP
                 .font(.system(size: 18))
             
             Spacer()
             
             Button(action: {
-                //model.acceptRequest()
+                model.acceptRequest(username: name)
             }, label: {
                 Text("Accept")
                     .font(.system(size: 18))
@@ -36,7 +37,7 @@ struct NotificationRow: View {
             })
             
             Button(action: {
-                //model.denyRequest()
+                model.removeRequest(username: name)
             }, label: {
                 Image(systemName: "xmark")
                     .foregroundColor(Color.black)

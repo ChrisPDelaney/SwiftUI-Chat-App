@@ -532,4 +532,18 @@ extension AppStateModel {
             completion(requested)
         }
     }
+    
+    func getAllRequests(completion: @escaping ([String]) -> Void) {
+        database.collection("users")
+            .document(currentUsername)
+            .collection("recievedRequests")
+            .getDocuments { snapshot, error in
+            guard let requests = snapshot?.documents.compactMap({ $0.documentID }), //document id is the username
+            error == nil else {
+                return
+            }
+            
+            completion(requests)
+        }
+    }
 }

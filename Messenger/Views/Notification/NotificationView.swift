@@ -9,17 +9,24 @@ import SwiftUI
 
 struct NotificationView: View {
     @EnvironmentObject var model: AppStateModel
-    @State var otherUsernames: [String] = []
+    @State var requests: [String] = []
     
     var body: some View {
         VStack {
             ScrollView(.vertical) {
-                NotificationRow()
-                NotificationRow()
+                ForEach(requests, id: \.self) { name in //JP
+                    NotificationRow(name: name)
+                }
             }
         }
         .navigationBarTitle("Activity", displayMode: .inline)
+        .onAppear {
+            model.getAllRequests() { requests in
+                self.requests = requests
+            }
+        }
     }
+    
 }
 
 struct NotificationView_Previews: PreviewProvider {

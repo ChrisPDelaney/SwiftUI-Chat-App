@@ -7,6 +7,22 @@
 
 import SwiftUI
 
+struct NotificationNumLabel : View {
+    @Binding var digit : Int
+    var body: some View {
+        ZStack {
+            Capsule().fill(Color.red).frame(width: 20 * CGFloat(numOfDigits()), height: 35, alignment: .topTrailing).position(CGPoint(x: 75, y: 0))
+            Text("\(digit)")
+                .foregroundColor(Color.white)
+                .font(Font.system(size: 20).bold()).position(CGPoint(x: 75, y: 0))
+        }
+    }
+    func numOfDigits() -> Float {
+        let numOfDigits = Float(String(digit).count)
+        return numOfDigits == 1 ? 1.5 : numOfDigits
+    }
+}
+
 struct GroupHome: View {
     @EnvironmentObject var model: AppStateModel
     @State var otherUsernames: [String] = []
@@ -17,10 +33,13 @@ struct GroupHome: View {
     var body: some View {
         NavigationView {
             VStack {
+                //If a group exists then display the current user's name and picture with their beer count
                 ScrollView(.vertical) {
                     if let user = model.currentGroup.first(where: {$0.name == model.currentUsername}) {
                         CurrentUserRow(user: user)
                     }
+                    //If a group exists then display each persons name and picture with their beer count
+                    // except the current user who is already displayed from previous if statement
                     ForEach(model.currentGroup, id: \.self) { user in
                         if(user.name != model.currentUsername) {
                             GroupMemberRow(user: user)
@@ -33,11 +52,16 @@ struct GroupHome: View {
                         destination: ChatView(),//destination is the user's view //JP FIX
                         //model.currentGroup = selected, //retrieved from compeltion handler of SearchAddToGroup //JP
                         label: {
-                            Image("chat")
-                                .resizable()
-                                .foregroundColor(.black)
-                                .scaledToFit()
-                                .frame(width: 65, height: 65)
+                            Image(systemName: "message") //Image("chat")
+                                .font(.system(size: 65))
+                                .overlay(NotificationNumLabel(digit: $model.unReadMsgs))
+                                //.resizable()
+                                //.scaledToFit()
+                                //.frame(width: 65, height: 65)
+                                //.foregroundColor(.black)
+                                //.overlay(Text("❤️"), alignment: .topTrailing)
+                                
+                                
                         }
                     )
                 }
@@ -106,6 +130,9 @@ struct GroupHome: View {
                 }
                 model.getGroup()
                 print("MODEL.GETGROUP EXECUTED")
+                
+                //Here call the new function to get number of new messages
+                model.getNumNewMsgs()
             }
             .background(
                 NavigationLink( //name will be the other user's name we tapped to start a convo with

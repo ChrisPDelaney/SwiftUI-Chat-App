@@ -32,6 +32,8 @@
 		833EE906262B1CFE004A9F9E /* SendButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833EE905262B1CFE004A9F9E /* SendButton.swift */; };
 		833EE909262B1D12004A9F9E /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833EE908262B1D12004A9F9E /* Message.swift */; };
 		833EE90C262B1D23004A9F9E /* AppStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833EE90B262B1D23004A9F9E /* AppStateModel.swift */; };
+		8A2AF05728D524A60012392F /* NotificationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2AF05528D524A60012392F /* NotificationRow.swift */; };
+		8A2AF05828D524A60012392F /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2AF05628D524A60012392F /* NotificationView.swift */; };
 		BE9310123767B7B6321F0B43 /* Pods_Messenger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B7AEBEB773027514C6F28A0 /* Pods_Messenger.framework */; };
 /* End PBXBuildFile section */
 
@@ -65,6 +67,8 @@
 		833EE905262B1CFE004A9F9E /* SendButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendButton.swift; sourceTree = "<group>"; };
 		833EE908262B1D12004A9F9E /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		833EE90B262B1D23004A9F9E /* AppStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateModel.swift; sourceTree = "<group>"; };
+		8A2AF05528D524A60012392F /* NotificationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationRow.swift; sourceTree = "<group>"; };
+		8A2AF05628D524A60012392F /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,6 +199,7 @@
 		833EE8F2262B1C66004A9F9E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				8A2AF05428D524A60012392F /* Notification */,
 				25B50DC62818286C00BFEDCF /* My Profile */,
 				6E52B8C128074DA100A5D729 /* ContentView.swift */,
 				6E416A542804ABFA001DCF24 /* Discover */,
@@ -225,6 +230,15 @@
 				833EE8E6262B1C4A004A9F9E /* Assets.xcassets */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		8A2AF05428D524A60012392F /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				8A2AF05528D524A60012392F /* NotificationRow.swift */,
+				8A2AF05628D524A60012392F /* NotificationView.swift */,
+			);
+			path = Notification;
 			sourceTree = "<group>";
 		};
 		E1063D069C489BAEABBEC21D /* Frameworks */ = {
@@ -359,6 +373,7 @@
 				6E52B8CA28077A1F00A5D729 /* UserProfile.swift in Sources */,
 				6E8EEEC327FE5725007CACFC /* GroupUser.swift in Sources */,
 				6E8EEEBB27FE2E23007CACFC /* GroupHome.swift in Sources */,
+				8A2AF05828D524A60012392F /* NotificationView.swift in Sources */,
 				833EE8FA262B1CC7004A9F9E /* SignUpView.swift in Sources */,
 				6E52B8C028070DDC00A5D729 /* CurrentUserRow.swift in Sources */,
 				833EE906262B1CFE004A9F9E /* SendButton.swift in Sources */,
@@ -368,6 +383,7 @@
 				833EE8FD262B1CD7004A9F9E /* ChatView.swift in Sources */,
 				6E8EEEB927FE2DED007CACFC /* GroupMemberRow.swift in Sources */,
 				6E416A562804AC2F001DCF24 /* ProfileView.swift in Sources */,
+				8A2AF05728D524A60012392F /* NotificationRow.swift in Sources */,
 				833EE900262B1CE2004A9F9E /* ChatRow.swift in Sources */,
 				6E52B8C228074DA100A5D729 /* ContentView.swift in Sources */,
 				6E52B8C428074FF700A5D729 /* SearchView.swift in Sources */,

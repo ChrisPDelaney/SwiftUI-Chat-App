@@ -29,6 +29,8 @@ struct GroupHome: View {
     @State var dayString: String = ""
     @State var showChat = false
     @State var showSearch = false
+    
+    @State var exampleNum: Int = 23
 
     var body: some View {
         NavigationView {
@@ -54,7 +56,8 @@ struct GroupHome: View {
                         label: {
                             Image(systemName: "message") //Image("chat")
                                 .font(.system(size: 65))
-                                .overlay(NotificationNumLabel(digit: $model.unReadMsgs))
+                                .overlay(NotificationNumLabel(digit: $exampleNum))
+                                //.overlay(NotificationNumLabel(digit: $model.unReadMsgs))
                                 //.resizable()
                                 //.scaledToFit()
                                 //.frame(width: 65, height: 65)
@@ -132,7 +135,7 @@ struct GroupHome: View {
                 print("MODEL.GETGROUP EXECUTED")
                 
                 //Here call the new function to get number of new messages
-                model.getNumNewMsgs()
+                //model.getNumNewMsgs()
             }
             .background(
                 NavigationLink( //name will be the other user's name we tapped to start a convo with

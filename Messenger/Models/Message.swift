@@ -18,4 +18,5 @@ struct Message: Hashable {
     let type: MessageType
     let sender: String
     let created: Date // Date
+    let read: Bool
 }

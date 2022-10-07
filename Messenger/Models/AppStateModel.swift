@@ -254,7 +254,7 @@ extension AppStateModel {
                     return
                 }
                 
-                //may only need to get the number of messages. So only call guard let objects = snapshot
+                //may only need to get the number of messages from objects.count or len(objects). So only call guard let objects = snapshot
                 // No need to go through the process of return a message with each portion of info and sorting?
                 
                 //holds text, type, created date
@@ -269,7 +269,9 @@ extension AppStateModel {
                         //set username here rather than doing the type
                         type: $0["sender"] as? String == self?.currentUsername ? .sent : .received,
                         sender: $0["sender"] as? String ?? "",
-                        created: date
+                        created: date,
+                        read: $0["read"] as? Bool ?? false
+                        
                     )
                 }).sorted(by: { first, second in
                     return first.created < second.created
@@ -325,14 +327,31 @@ extension AppStateModel {
                         //set username here rather than doing the type
                         type: $0["sender"] as? String == self?.currentUsername ? .sent : .received,
                         sender: $0["sender"] as? String ?? "",
-                        created: date
+                        created: date,
+                        read: $0["read"] as? Bool ?? false
                     )
                 }).sorted(by: { first, second in
                     return first.created < second.created
                 })
                 
-                //print("Messages are: \(messages)")
+                print("Messages are: \(messages)")
 
+                for msg in messages{
+                    if msg.read == false
+                    {
+                        print("Message id is \(msg.id)")
+                        self?.database.collection("users").document(self!.currentUsername ).collection("messages").document(msg.id).setData([ "read": true ], merge: true) { err in
+                            if let err = err {
+                                print("Error writing document: \(err)")
+                            } else {
+                                print("Document successfully written!")
+                            }
+                        }
+                    }//END if msg read == false
+                }//END for loop
+                
+                print("Exited for loop")
+                
                 DispatchQueue.main.async {
                     self?.messages = messages
                     self?.defaults.set(messages.count, forKey: "seenMsgNum")
@@ -340,7 +359,12 @@ extension AppStateModel {
                 }
                 
                 
-            }
+            }//END listener
+        
+        print("Exited listener")
+        
+        //print("The size of self.messages is \(self.messages.count)")
+        
     }
 
     func sendMessage(text: String) {
@@ -355,8 +379,9 @@ extension AppStateModel {
             "id": newMessageId,
             "text": text,
             "sender": currentUsername,
-            "created": dateString
-        ]
+            "created": dateString,
+            "read": false
+        ] as [String : Any]
 
         //loop here forEach username in GCUsers
         for user in currentGroup {
@@ -452,6 +477,7 @@ extension AppStateModel {
                                     "username": username,
                                     "inGroup": false,
                                     "numFriends": 0,
+                                    "numMsgsRead": 0,
                                     "profileUrl": metaImageUrl ]) { error in
                                         guard error == nil else { return }
                                         DispatchQueue.main.async {

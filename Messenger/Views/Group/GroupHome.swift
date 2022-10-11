@@ -11,10 +11,14 @@ struct NotificationNumLabel : View {
     @Binding var digit : Int
     var body: some View {
         ZStack {
-            Capsule().fill(Color.red).frame(width: 20 * CGFloat(numOfDigits()), height: 35, alignment: .topTrailing).position(CGPoint(x: 75, y: 0))
-            Text("\(digit)")
-                .foregroundColor(Color.white)
-                .font(Font.system(size: 20).bold()).position(CGPoint(x: 75, y: 0))
+            if digit != 0
+            {
+                Capsule().fill(Color.red).frame(width: 20 * CGFloat(numOfDigits()), height: 35, alignment: .topTrailing).position(CGPoint(x: 75, y: 0))
+                Text("\(digit)")
+                    .foregroundColor(Color.white)
+                    .font(Font.system(size: 20).bold()).position(CGPoint(x: 75, y: 0))
+            }
+            
         }
     }
     func numOfDigits() -> Float {
@@ -56,8 +60,8 @@ struct GroupHome: View {
                         label: {
                             Image(systemName: "message") //Image("chat")
                                 .font(.system(size: 65))
-                                .overlay(NotificationNumLabel(digit: $exampleNum))
-                                //.overlay(NotificationNumLabel(digit: $model.unReadMsgs))
+                                .overlay(NotificationNumLabel(digit: $model.unReadMsgs))
+                                //.overlay(NotificationNumLabel(digit: $exampleNum))
                                 //.resizable()
                                 //.scaledToFit()
                                 //.frame(width: 65, height: 65)
@@ -125,6 +129,8 @@ struct GroupHome: View {
                 SignInView()
             })
             .onAppear {
+                model.inChat = false
+                print("The bool inChat is \(model.inChat)")
                 //make sure the user is signed in, don't want to get conversations if there's no user
                 print("BEFORE RETURNING CURRENT USER IN GROUP HOME")
                 guard model.auth.currentUser != nil else {
@@ -135,7 +141,7 @@ struct GroupHome: View {
                 print("MODEL.GETGROUP EXECUTED")
                 
                 //Here call the new function to get number of new messages
-                //model.getNumNewMsgs()
+                model.getNewMsgs()
             }
             .background(
                 NavigationLink( //name will be the other user's name we tapped to start a convo with

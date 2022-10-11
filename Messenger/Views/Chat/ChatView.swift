@@ -20,7 +20,7 @@ struct CustomField: ViewModifier {
 struct ChatView: View {
     @State var message: String = ""
     @EnvironmentObject var model: AppStateModel
-
+    
     var body: some View {
         VStack { 
             
@@ -55,7 +55,10 @@ struct ChatView: View {
             }
         }
         .onAppear { //start observing the conversation that we're in
-            model.observeChat()
+            model.inChat = true
+            print("The bool inChat is \(model.inChat)")
+            model.getNewMsgs()
+            //model.observeChat()
         }
     }
 }

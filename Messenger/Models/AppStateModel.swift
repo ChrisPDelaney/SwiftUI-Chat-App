@@ -31,13 +31,14 @@ class AppStateModel: ObservableObject {
     @Published var messages: [Message] = []
     
     @Published var unReadMsgs: Int = 0
+    @Published var inChat: Bool = false
 
     let database = Firestore.firestore()
     let auth = Auth.auth()
 
     var groupListener: ListenerRegistration?
+    var newMsgListener: ListenerRegistration?
     var chatListener: ListenerRegistration?
-    var newMsgNumListener: ListenerRegistration?
     var beerListener: ListenerRegistration?
 
     private let defaults = UserDefaults.standard
@@ -242,9 +243,9 @@ extension AppStateModel {
 // Get Chat / Send Messages
 
 extension AppStateModel {
-    func getNumNewMsgs(){
-        print("Inside function getNumNewMsgs")
-        newMsgNumListener = database
+    func getNewMsgs(){
+        print("Inside function getNewMsgs")
+        newMsgListener = database
             .collection("users")
             .document(currentUsername)
             .collection("messages")
@@ -254,15 +255,11 @@ extension AppStateModel {
                     return
                 }
                 
-                //may only need to get the number of messages from objects.count or len(objects). So only call guard let objects = snapshot
-                // No need to go through the process of return a message with each portion of info and sorting?
-                
                 //holds text, type, created date
                 let messages: [Message] = objects.compactMap({//taking the text, sender, and created pieces out, casting them to appropriate expected types
                     guard let date = ISO8601DateFormatter().date(from: $0["created"] as? String ?? "") else {
                         return nil
                     }
-                    
                     return Message(
                         id: $0["id"] as? String ?? "",
                         text: $0["text"] as? String ?? "",
@@ -271,97 +268,88 @@ extension AppStateModel {
                         sender: $0["sender"] as? String ?? "",
                         created: date,
                         read: $0["read"] as? Bool ?? false
-                        
                     )
                 }).sorted(by: { first, second in
                     return first.created < second.created
                 })
                 
-                
-                let msgCount: Int = messages.count
-                print("The msgCount is: \(msgCount)")
-                
-                let readMsgs = self?.defaults.integer(forKey: "seenMsgNum")
-                print("The number of read msgs is \(readMsgs)")
-                
-                let newMsgs = msgCount - (readMsgs ?? 0)
-                if newMsgs > 0
+                if self?.inChat == true
                 {
-                    //need to set the view to show this
-                    print("Inside if newMsgs > 0")
-                    print("The number of new messages are \(newMsgs)")
+                    print("Inside inChat == True")
+                    
+                    for msg in messages
+                    {
+                        if msg.read == false
+                        {
+                            print("Message id is \(msg.id)")
+                            self!.database.collection("users").document(self!.currentUsername ).collection("messages").document(msg.id).setData([ "read": true ], merge: true) { err in
+                                if let err = err {
+                                    print("Error writing document: \(err)")
+                                } else {
+                                    print("Document successfully written!")
+                                }
+                            }
+                        }//END if msg read == false
+                    }//END for loop
+                    
+                    print("Exited for loop making all messages read")
+                    
+                    DispatchQueue.main.async
+                    {
+                        self?.unReadMsgs = 0
+                        self?.messages = messages
+                    }
+                }
+                else
+                {
+                    print("Inside inChat == False")
+                    
+                    var newMsgNum: Int = 0
+                    for msg in messages{
+                        if msg.read == false
+                        {
+                            newMsgNum += 1
+                        }//END if msg read == false
+                    }//END for loop
+                    
+                    print("Exited for loop in getNumNew")
+            
                     
                     DispatchQueue.main.async {
-                        self?.unReadMsgs = newMsgs
+                        self?.unReadMsgs = newMsgNum
+                        self?.messages = messages
                         print("Inside dispatch queue the number of unread messages are \(String(describing: self?.unReadMsgs))")
                     }
                     
+                    print("The number of unread messages are \(String(describing: self?.unReadMsgs))")
                 }
                 
-                print("The number of unread messages are \(String(describing: self?.unReadMsgs))")
-
                 
             }//END snapshot listener
     }
     
     func observeChat() {
         print("Inside observe chat")
-        chatListener = database
-            .collection("users")
-            .document(currentUsername)
-            .collection("messages")
-            .addSnapshotListener { [weak self] snapshot, error in
-                guard let objects = snapshot?.documents.compactMap({ $0.data() }), //returns an array of dictionaries
-                      error == nil else {
-                    return
-                }
-                
-                //holds text, type, created date
-                let messages: [Message] = objects.compactMap({//taking the text, sender, and created pieces out, casting them to appropriate expected types
-                    guard let date = ISO8601DateFormatter().date(from: $0["created"] as? String ?? "") else {
-                        return nil
-                    }
-                    return Message(
-                        id: $0["id"] as? String ?? "",
-                        text: $0["text"] as? String ?? "",
-                        //set username here rather than doing the type
-                        type: $0["sender"] as? String == self?.currentUsername ? .sent : .received,
-                        sender: $0["sender"] as? String ?? "",
-                        created: date,
-                        read: $0["read"] as? Bool ?? false
-                    )
-                }).sorted(by: { first, second in
-                    return first.created < second.created
-                })
-                
-                print("Messages are: \(messages)")
-
-                for msg in messages{
-                    if msg.read == false
-                    {
-                        print("Message id is \(msg.id)")
-                        self?.database.collection("users").document(self!.currentUsername ).collection("messages").document(msg.id).setData([ "read": true ], merge: true) { err in
-                            if let err = err {
-                                print("Error writing document: \(err)")
-                            } else {
-                                print("Document successfully written!")
-                            }
-                        }
-                    }//END if msg read == false
-                }//END for loop
-                
-                print("Exited for loop")
-                
-                DispatchQueue.main.async {
-                    self?.messages = messages
-                    self?.defaults.set(messages.count, forKey: "seenMsgNum")
-                    self?.unReadMsgs = 0
-                }
-                
-                
-            }//END listener
         
-        print("Exited listener")
+        for msg in self.messages{
+            if msg.read == false
+            {
+                print("Message id is \(msg.id)")
+                self.database.collection("users").document(self.currentUsername ).collection("messages").document(msg.id).setData([ "read": true ], merge: true) { err in
+                    if let err = err {
+                        print("Error writing document: \(err)")
+                    } else {
+                        print("Document successfully written!")
+                    }
+                }
+            }//END if msg read == false
+        }//END for loop
+        
+        print("Exited for loop")
+        
+        DispatchQueue.main.async {
+            self.unReadMsgs = 0
+        }
         
         //print("The size of self.messages is \(self.messages.count)")
         

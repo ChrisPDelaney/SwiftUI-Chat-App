@@ -199,9 +199,9 @@
 		833EE8F2262B1C66004A9F9E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6E52B8C128074DA100A5D729 /* ContentView.swift */,
 				8A2AF05428D524A60012392F /* Notification */,
 				25B50DC62818286C00BFEDCF /* My Profile */,
-				6E52B8C128074DA100A5D729 /* ContentView.swift */,
 				6E416A542804ABFA001DCF24 /* Discover */,
 				6E416A532804A6CC001DCF24 /* Chat */,
 				6E416A522804A6B0001DCF24 /* Group */,

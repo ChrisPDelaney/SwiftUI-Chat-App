@@ -25,6 +25,7 @@ class AppStateModel: ObservableObject {
     
     @AppStorage("currentDate") var currentDate: String = "2022-01-27" //added
     @AppStorage("currentVenue") var currentVenue: String = "The Tombs" //added
+    @AppStorage("currentGroupName") var currentGroupName: String = ""
     
     @Published var showingSignIn: Bool = true
     @Published var currentGroup: [GroupUser] = []
@@ -57,6 +58,7 @@ class AppStateModel: ObservableObject {
 // Search
 
 extension AppStateModel {
+    //used for adding member to group
     func searchUnavailableUsers(queryText: String, completion: @escaping ([String]) -> Void) {
         database.collection("users").whereField("inGroup", isGreaterThan: false).order(by: "inGroup").getDocuments { snapshot, error in //snapshot is the
             guard let usernames = snapshot?.documents.compactMap({ $0.documentID }), //document id is the username
@@ -73,7 +75,7 @@ extension AppStateModel {
             completion(filtered)
         }
     }
-    
+    //used for adding members to group
     func searchAvailableUsers(queryText: String, completion: @escaping ([String]) -> Void) {
         database.collection("users").whereField("inGroup", isLessThan: true).order(by: "inGroup").getDocuments { snapshot, error in //snapshot is the
             guard let usernames = snapshot?.documents.compactMap({ $0.documentID }), //document id is the username
@@ -91,6 +93,7 @@ extension AppStateModel {
         }
     }
     
+    //used in searchView for adding friends
     func searchAllUsers(queryText: String, completion: @escaping ([User]) -> Void) {
         database.collection("users").getDocuments { snapshot, error in
             guard let objects = snapshot?.documents.compactMap({ $0.data() }), //returns an array of dictionaries
@@ -136,6 +139,30 @@ extension AppStateModel {
 
 extension AppStateModel {
     //change to create night
+    func createGroup2(groupName: String, selected: [String], groupLoc: String)
+    {
+        //set the local AppStorage groupName
+        self.currentGroupName = groupName
+        
+        //set the group document up in Firebase
+        database.collection("groups").document(groupName).setData([
+                    "groupName": groupName,
+                    "groupLocation": groupLoc]) { error in
+                        guard error == nil else { return }
+                        
+                }
+        //Add members to the group members collection. And for each member set their inGroup to true.
+        for user in selected{
+            database.collection("groups").document(groupName).collection("members").document(user).setData(["name": user, "beerCount": 0])
+            database.collection("users")
+                .document(user).setData(["inGroup": true,
+                                         "groupName": groupName], merge: true)
+            
+        }
+        
+        
+    }
+    
     func createGroup(selected: [String]) {
         for user in selected { //created for loop here
             for member in selected {
@@ -146,6 +173,14 @@ extension AppStateModel {
             }
             database.collection("users")
                 .document(user).setData(["inGroup": true], merge: true)
+        }
+    }
+    
+    func joinGroup(groupName: String){
+        //this is where the app storage currentGroupName needs to be set
+        
+        DispatchQueue.main.async {
+            self.currentGroupName = groupName
         }
     }
     
@@ -167,6 +202,7 @@ extension AppStateModel {
             }
             database.collection("users")
                 .document(user).setData(["inGroup": true], merge: true)
+                //.document(user).setData(["inGroup": true,"groupName": ], merge: true)
         }
         for user in currentGroup {
             print("")
@@ -185,7 +221,52 @@ extension AppStateModel {
         }
     }
     
-    //test comment
+    func getGroup2(){
+        print("Inside getGroup2")
+        print("Current user name is :")
+        print(currentUsername)
+        print("The profile URL is: \(profileUrl)" )
+        
+        
+        //get the current groupName from the database from within the user's document
+        let docRef = database.collection("users").document(currentUsername)
+        
+        print("completed document reference")
+        
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
+                //print("Document data: \(dataDescription)")
+                //print("The document is \(document.data()?["groupName"])")
+                self.currentGroupName = document.data()?["groupName"] as? String ?? ""
+                print("The current groupName is \(self.currentGroupName)")
+            } else {
+                print("Document to get groupName does not exist")
+            }
+        }
+        
+//        groupListener = database
+//            .collection("groups")
+//            .document(currentGroupName)
+//            .collection("members").addSnapshotListener { [weak self] snapshot, error in
+//                if error == nil {
+//
+//                    if let snapshot = snapshot {
+//
+//                        DispatchQueue.main.async {
+//                            self?.currentGroup = snapshot.documents.map { data in
+//                                return GroupUser(
+//                                    name: data["name"] as? String ?? "",
+//                                    beerCount: data["beerCount"] as? Int ?? 0
+//                                )
+//                            }
+//                        }
+//                    }
+//                }
+//            }//end groupListener
+        
+    }
+    
     func getGroup() {
         print("Inside the get group function")
         print("Current user name is :")
@@ -328,33 +409,6 @@ extension AppStateModel {
             }//END snapshot listener
     }
     
-    func observeChat() {
-        print("Inside observe chat")
-        
-        for msg in self.messages{
-            if msg.read == false
-            {
-                print("Message id is \(msg.id)")
-                self.database.collection("users").document(self.currentUsername ).collection("messages").document(msg.id).setData([ "read": true ], merge: true) { err in
-                    if let err = err {
-                        print("Error writing document: \(err)")
-                    } else {
-                        print("Document successfully written!")
-                    }
-                }
-            }//END if msg read == false
-        }//END for loop
-        
-        print("Exited for loop")
-        
-        DispatchQueue.main.async {
-            self.unReadMsgs = 0
-        }
-        
-        //print("The size of self.messages is \(self.messages.count)")
-        
-    }
-
     func sendMessage(text: String) {
         let newMessageId = UUID().uuidString
         let dateString = ISO8601DateFormatter().string(from: Date())

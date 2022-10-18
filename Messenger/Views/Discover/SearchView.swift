@@ -51,13 +51,14 @@ struct SearchView: View {
             guard !text.trimmingCharacters(in: .whitespaces).isEmpty else {
                 return
             }
-
+            //getting the users from firebase
             if (searchPeople) {
                 model.searchAllUsers(queryText: text) { users in
                     self.users = users
                 }
             }
             else {
+                //getting the venues from firebase
                 model.searchVenues(queryText: text) { venues in
                     self.venues = venues
                 }

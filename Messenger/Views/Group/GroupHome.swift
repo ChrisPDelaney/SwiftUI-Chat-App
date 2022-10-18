@@ -137,7 +137,8 @@ struct GroupHome: View {
                     print("There is no current user")
                     return
                 }
-                model.getGroup()
+                //model.getGroup()
+                model.getGroup2()
                 print("MODEL.GETGROUP EXECUTED")
                 
                 //Here call the new function to get number of new messages
@@ -150,10 +151,12 @@ struct GroupHome: View {
 
                         //we want to wait for the search view to disappear before we try to show the chat view
                         DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those //Consider changing
-                            model.addToGroup(selected: selected)
+                            //model.addToGroup(selected: selected)
+                            model.createGroup2(groupName: "testGroupName2", selected: selected, groupLoc: "NY Metropolitan Area")
+                            
                         }
                     },
-                    isActive: $showSearch
+                    isActive: $showSearch //background is active when showSearch is true
                 ) { EmptyView() }
             )
         }

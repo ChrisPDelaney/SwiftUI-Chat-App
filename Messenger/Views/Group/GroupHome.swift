@@ -33,6 +33,7 @@ struct GroupHome: View {
     @State var dayString: String = ""
     @State var showChat = false
     @State var showSearch = false
+    @State var inGroup = false
     
     @State var exampleNum: Int = 23
 
@@ -86,13 +87,15 @@ struct GroupHome: View {
                         }
                         if #available(iOS 15.0, *) {
                             Button(role: .destructive, action: {
-                                model.leaveGroup()
+                                //model.leaveGroup()
+                                model.leaveGroup2()
                             }) {
                                 Text("Leave Group")
                             }
                         } else {
                             Button(action: {
-                                model.leaveGroup()
+                                //model.leaveGroup()
+                                model.leaveGroup2()
                             }) {
                                 Text("Leave Group")
                             }                        }
@@ -131,6 +134,18 @@ struct GroupHome: View {
             .onAppear {
                 model.inChat = false
                 print("The bool inChat is \(model.inChat)")
+                
+                if model.currentGroupName != ""
+                {
+                    inGroup = true
+                }
+                else
+                {
+                    inGroup = false
+                }
+                
+                print("inGroup is \(inGroup)")
+                
                 //make sure the user is signed in, don't want to get conversations if there's no user
                 print("BEFORE RETURNING CURRENT USER IN GROUP HOME")
                 guard model.auth.currentUser != nil else {
@@ -152,7 +167,7 @@ struct GroupHome: View {
                         //we want to wait for the search view to disappear before we try to show the chat view
                         DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those //Consider changing
                             //model.addToGroup(selected: selected)
-                            model.createGroup2(groupName: "testGroupName2", selected: selected, groupLoc: "NY Metropolitan Area")
+                            model.addToGroup2(groupName: "testGroupName2", selected: selected, groupLoc: "NY Metropolitan Area")
                             
                         }
                     },

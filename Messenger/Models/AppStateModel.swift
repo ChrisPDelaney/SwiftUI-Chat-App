@@ -29,6 +29,7 @@ class AppStateModel: ObservableObject {
     
     @Published var showingSignIn: Bool = true
     @Published var currentGroup: [GroupUser] = []
+    //@Published var currentGroupName: String = ""
     @Published var messages: [Message] = []
     
     @Published var unReadMsgs: Int = 0
@@ -38,6 +39,7 @@ class AppStateModel: ObservableObject {
     let auth = Auth.auth()
 
     var groupListener: ListenerRegistration?
+    var groupNameListener: ListenerRegistration?
     var newMsgListener: ListenerRegistration?
     var chatListener: ListenerRegistration?
     var beerListener: ListenerRegistration?
@@ -151,7 +153,8 @@ extension AppStateModel {
                         guard error == nil else { return }
                         
                 }
-        //Add members to the group members collection. And for each member set their inGroup to true.
+        //Add members to the group members collection.
+        // And for each member set their inGroup to true along with a field for the groupName
         for user in selected{
             database.collection("groups").document(groupName).collection("members").document(user).setData(["name": user, "beerCount": 0])
             database.collection("users")
@@ -176,6 +179,7 @@ extension AppStateModel {
         }
     }
     
+    //if we choose to go with an invite and accept style
     func joinGroup(groupName: String){
         //this is where the app storage currentGroupName needs to be set
         
@@ -184,16 +188,54 @@ extension AppStateModel {
         }
     }
     
+    func addToGroup2(groupName: String, selected: [String], groupLoc: String)
+    {
+        //if this is a member without a group, they are creating a group
+        if self.currentGroupName == ""
+        {
+            //set the local AppStorage groupName
+            self.currentGroupName = groupName
+            
+            //set the group document up in Firebase
+            database.collection("groups").document(groupName).setData([
+                        "groupName": groupName,
+                        "groupLocation": groupLoc]) { error in
+                            guard error == nil else { return }
+                            
+                    }
+        }
+        
+        for user in selected{
+            //for all members being added, set their name and beerCount in the group member collection
+            database.collection("groups").document(groupName).collection("members").document(user).setData(["name": user, "beerCount": 0])
+            
+            //in each member's individual document set their inGroup to true and their groupName to name
+            database.collection("users")
+                .document(user).setData(["inGroup": true,
+                                         "groupName": groupName], merge: true)
+            
+            database.collection("users")
+                .document(user).collection("myGroups")
+                .document(groupName).setData(["inGroup": true], merge: true)
+            
+        }//END for user
+        
+    }
+    
     func addToGroup(selected: [String]) {
 
         print("ENTERED ADDTOGROUP FUNCTION")
+        
+        //first for everyone being added
         for user in selected { //created for loop here
+            //populate their groupMembers collection with other new groupMembers
             for member in selected {
                 database.collection("users")
                     .document(user)
                     .collection("groupMembers")
                     .document(member).setData(["name": member, "beerCount": 0])
             }
+            //then populate their groupMembers collection with already existing groupMembers
             for currentMember in currentGroup {
                 database.collection("users")
                     .document(user)
@@ -204,6 +246,7 @@ extension AppStateModel {
                 .document(user).setData(["inGroup": true], merge: true)
                 //.document(user).setData(["inGroup": true,"groupName": ], merge: true)
         }
+        //then for all the members who were already in the group before the additions
         for user in currentGroup {
             print("")
             print("")
@@ -212,6 +255,7 @@ extension AppStateModel {
             print("")
             print("")
             print("")
+            //add all the new members to the exisiting member's groupMember collection
             for member in selected {
                 database.collection("users")
                     .document(user.name)
@@ -230,9 +274,9 @@ extension AppStateModel {
         
         //get the current groupName from the database from within the user's document
         let docRef = database.collection("users").document(currentUsername)
-        
+
         print("completed document reference")
-        
+
         docRef.getDocument { (document, error) in
             if let document = document, document.exists {
                 let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
@@ -245,25 +289,38 @@ extension AppStateModel {
             }
         }
         
-//        groupListener = database
-//            .collection("groups")
-//            .document(currentGroupName)
-//            .collection("members").addSnapshotListener { [weak self] snapshot, error in
-//                if error == nil {
-//
-//                    if let snapshot = snapshot {
-//
-//                        DispatchQueue.main.async {
-//                            self?.currentGroup = snapshot.documents.map { data in
-//                                return GroupUser(
-//                                    name: data["name"] as? String ?? "",
-//                                    beerCount: data["beerCount"] as? Int ?? 0
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
-//            }//end groupListener
+        
+        if self.currentGroupName != ""
+        {
+            print("Inside while currentGroupName is not empty")
+        
+            print("The current groupName is \(self.currentGroupName)")
+            
+            groupListener = database
+                .collection("groups")
+                .document(currentGroupName)
+                .collection("members").addSnapshotListener { [weak self] snapshot, error in
+                    if error == nil {
+
+                        if let snapshot = snapshot {
+
+                            DispatchQueue.main.async {
+                                self?.currentGroup = snapshot.documents.map { data in
+                                    return GroupUser(
+                                        name: data["name"] as? String ?? "",
+                                        beerCount: data["beerCount"] as? Int ?? 0
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    if let error = error {
+                        print("Could not retrieve group members: \(error)")
+                    }
+                } //end groupListener
+            
+        }//END if != ""
+        
         
     }
     
@@ -293,7 +350,25 @@ extension AppStateModel {
                 }
             }
     }
+    
+    func leaveGroup2(){
+        //remove user from the group's members collection
+        database.collection("groups")
+            .document(currentGroupName)
+            .collection("members")
+            .document(currentUsername).delete()
         
+        //set user's inGroup to false and groupName to ""
+        database.collection("users")
+            .document(currentUsername).setData(["inGroup": false,
+                                     "groupName": ""], merge: true)
+        
+        //set local currentGroupName to ""
+        self.currentGroupName = ""
+        self.currentGroup = []
+        
+    }
+    
     func leaveGroup() {
         for user in currentGroup { //created for loop here
             database.collection("users")
@@ -541,6 +616,7 @@ extension AppStateModel {
         do {
             try auth.signOut()
             self.showingSignIn = true
+            self.currentGroupName = ""
         }
         catch {
             print(error)

@@ -267,8 +267,7 @@ extension AppStateModel {
     
     func getGroup2(){
         print("Inside getGroup2")
-        print("Current user name is :")
-        print(currentUsername)
+        print("Current user name is : \(currentUsername)")
         print("The profile URL is: \(profileUrl)" )
         
         
@@ -277,13 +276,16 @@ extension AppStateModel {
 
         print("completed document reference")
 
+        
+        
+        //Maybe put this query in main.async
         docRef.getDocument { (document, error) in
             if let document = document, document.exists {
                 let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
                 //print("Document data: \(dataDescription)")
                 //print("The document is \(document.data()?["groupName"])")
                 self.currentGroupName = document.data()?["groupName"] as? String ?? ""
-                print("The current groupName is \(self.currentGroupName)")
+                print("The groupName from DB is \(self.currentGroupName)")
             } else {
                 print("Document to get groupName does not exist")
             }
@@ -292,7 +294,7 @@ extension AppStateModel {
         
         if self.currentGroupName != ""
         {
-            print("Inside while currentGroupName is not empty")
+            //print("Inside while currentGroupName is not empty")
         
             print("The current groupName is \(self.currentGroupName)")
             
@@ -363,9 +365,14 @@ extension AppStateModel {
             .document(currentUsername).setData(["inGroup": false,
                                      "groupName": ""], merge: true)
         
-        //set local currentGroupName to ""
-        self.currentGroupName = ""
-        self.currentGroup = []
+        self.groupListener?.remove()
+        
+        DispatchQueue.main.async {
+            print("The group before setting to empty is \(self.currentGroup)")
+            self.currentGroup = []
+            print("Just set currentGroup to empty. Now it is \(self.currentGroup)")
+            self.currentGroupName = ""
+        }
         
     }
     

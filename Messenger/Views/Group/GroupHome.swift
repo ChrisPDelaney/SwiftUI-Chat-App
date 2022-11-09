@@ -29,6 +29,7 @@ struct NotificationNumLabel : View {
 
 struct GroupHome: View {
     @EnvironmentObject var model: AppStateModel
+    @EnvironmentObject var model2: GroupStateModel
     @State var otherUsernames: [String] = []
     @State var dayString: String = ""
     @State var showChat = false
@@ -42,12 +43,12 @@ struct GroupHome: View {
             VStack {
                 //If a group exists then display the current user's name and picture with their beer count
                 ScrollView(.vertical) {
-                    if let user = model.currentGroup.first(where: {$0.name == model.currentUsername}) {
+                    if let user = model2.currentGroup.first(where: {$0.name == model.currentUsername}) {
                         CurrentUserRow(user: user)
                     }
                     //If a group exists then display each persons name and picture with their beer count
                     // except the current user who is already displayed from previous if statement
-                    ForEach(model.currentGroup, id: \.self) { user in
+                    ForEach(model2.currentGroup, id: \.self) { user in
                         if(user.name != model.currentUsername) {
                             GroupMemberRow(user: user)
                         }
@@ -75,7 +76,7 @@ struct GroupHome: View {
                 }
                 .padding()
             }
-            .navigationTitle(model.currentDate)
+            .navigationTitle(model2.currentDate)
             //.navigationBarItems(trailing: Text(model.currentVenue))
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -88,14 +89,14 @@ struct GroupHome: View {
                         if #available(iOS 15.0, *) {
                             Button(role: .destructive, action: {
                                 //model.leaveGroup()
-                                model.leaveGroup2()
+                                model2.leaveGroup2()
                             }) {
                                 Text("Leave Group")
                             }
                         } else {
                             Button(action: {
                                 //model.leaveGroup()
-                                model.leaveGroup2()
+                                model2.leaveGroup2()
                             }) {
                                 Text("Leave Group")
                             }                        }
@@ -133,18 +134,9 @@ struct GroupHome: View {
             })
             .onAppear {
                 model.inChat = false
-                print("The bool inChat is \(model.inChat)")
+                print("\n The bool inChat is \(model.inChat)")
                 
-                if model.currentGroupName != ""
-                {
-                    inGroup = true
-                }
-                else
-                {
-                    inGroup = false
-                }
-                
-                print("inGroup is \(inGroup)")
+                print("The group name before any functions is \(model2.currentGroupName)")
                 
                 //make sure the user is signed in, don't want to get conversations if there's no user
                 print("BEFORE RETURNING CURRENT USER IN GROUP HOME")
@@ -152,12 +144,24 @@ struct GroupHome: View {
                     print("There is no current user")
                     return
                 }
+                
+                model2.getGroupName()
+                
+                print("The members of the current group after getting groupName are \(model2.currentGroup)")
+                
+                guard model2.currentGroupName != "" else{
+                    print("There is no current group")
+                    return
+                }
+                
+                print("The members of the current group after guard statement are \(model2.currentGroup)")
+                
                 //model.getGroup()
-                model.getGroup2()
+                model2.getGroup2()
                 print("MODEL.GETGROUP EXECUTED")
                 
                 //Here call the new function to get number of new messages
-                model.getNewMsgs()
+                //model.getNewMsgs()
             }
             .background(
                 NavigationLink( //name will be the other user's name we tapped to start a convo with
@@ -167,7 +171,7 @@ struct GroupHome: View {
                         //we want to wait for the search view to disappear before we try to show the chat view
                         DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those //Consider changing
                             //model.addToGroup(selected: selected)
-                            model.addToGroup2(groupName: "testGroupName2", selected: selected, groupLoc: "NY Metropolitan Area")
+                            model2.addToGroup2(groupName: "testGroupName2", selected: selected, groupLoc: "NY Metropolitan Area")
                             
                         }
                     },

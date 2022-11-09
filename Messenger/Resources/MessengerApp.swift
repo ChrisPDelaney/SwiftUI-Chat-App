@@ -16,6 +16,7 @@ struct MessengerApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(AppStateModel())
+                .environmentObject(GroupStateModel())
         }
     }
 }

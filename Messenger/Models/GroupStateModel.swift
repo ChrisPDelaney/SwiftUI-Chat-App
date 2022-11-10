@@ -142,6 +142,8 @@ extension GroupStateModel {
         print("Current user name is : \(currentUsername)")
         print("The profile URL is: \(profileUrl)" )
         
+        self.currentGroup = []
+        self.currentGroupName = ""
         
         //get the current groupName from the database from within the user's document
 //        let docRef = database.collection("users").document(currentUsername)
@@ -191,7 +193,7 @@ extension GroupStateModel {
                 print("The newGroupName var is set to \(newGroupName)")
                 
                 //if new group name found is not empty and it does not equal the existing stored name
-                if !newGroupName.isEmpty && self!.currentGroupName != newGroupName{
+                if !newGroupName.isEmpty{  //&& self!.currentGroupName != newGroupName{
                     // AND statement for UI loading efficiency, don't want to call getGroup2 here if
                     // the group has not changed, bc for that case the UI view already called getGroup
                     DispatchQueue.main.async {
@@ -263,10 +265,10 @@ extension GroupStateModel {
             .document(currentGroupName).setData(["inGroup": false], merge: true)
         
         DispatchQueue.main.async {
-            print("The group before setting to empty is \(self.currentGroup)")
-            self.currentGroup = []
-            print("Just set currentGroup to empty. Now it is \(self.currentGroup)")
-            self.currentGroupName = ""
+            //print("The group before setting to empty is \(self.currentGroup)")
+            //self.currentGroup = []
+            //print("Just set currentGroup to empty. Now it is \(self.currentGroup)")
+            //self.currentGroupName = ""
             self.getGroupName()
             print("Just called getGroupName inside of leaveGroup2's dispatch queue")
         }

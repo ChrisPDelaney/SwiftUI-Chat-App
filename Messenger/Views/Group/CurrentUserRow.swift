@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CurrentUserRow: View {
     @EnvironmentObject var model: AppStateModel
+    @EnvironmentObject var beerModel: BeerStateModel
     
     let user: GroupUser
     
@@ -40,13 +41,13 @@ struct CurrentUserRow: View {
                 showingBeerAlert = true
             })
             .simultaneousGesture(TapGesture().onEnded {
-                model.increaseDrink()
+                beerModel.increaseDrink()
             })
             .alert(isPresented: $showingBeerAlert) {
                 Alert(
                     title: Text("Are you sure you want to reset drinks?"),
                     primaryButton: .destructive(Text("Reset")) {
-                        model.resetDrink()
+                        beerModel.resetDrink()
                     },
                     secondaryButton: .cancel()
                 )

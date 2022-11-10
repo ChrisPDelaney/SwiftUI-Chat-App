@@ -44,7 +44,7 @@ struct GroupHome: View {
                 //If a group exists then display the current user's name and picture with their beer count
                 ScrollView(.vertical) {
                     if let user = model2.currentGroup.first(where: {$0.name == model.currentUsername}) {
-                        CurrentUserRow(user: user)
+                        CurrentUserRow(user: user).environmentObject(BeerStateModel())
                     }
                     //If a group exists then display each persons name and picture with their beer count
                     // except the current user who is already displayed from previous if statement
@@ -147,18 +147,18 @@ struct GroupHome: View {
                 
                 model2.getGroupName()
                 
-                print("The members of the current group after getting groupName are \(model2.currentGroup)")
-                
-                guard model2.currentGroupName != "" else{
-                    print("There is no current group")
-                    return
-                }
-                
-                print("The members of the current group after guard statement are \(model2.currentGroup)")
-                
-                //model.getGroup()
-                model2.getGroup2()
-                print("MODEL.GETGROUP EXECUTED")
+//                print("The members of the current group after getting groupName are \(model2.currentGroup)")
+//
+//                guard model2.currentGroupName != "" else{
+//                    print("There is no current group")
+//                    return
+//                }
+//
+//                print("The members of the current group after guard statement are \(model2.currentGroup)")
+//
+//                //model.getGroup()
+//                model2.getGroup2()
+//                print("MODEL.GETGROUP EXECUTED")
                 
                 //Here call the new function to get number of new messages
                 //model.getNewMsgs()

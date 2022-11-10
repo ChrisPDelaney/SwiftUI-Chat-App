@@ -37,6 +37,7 @@
 		8AC6DD21291A0A4400767B78 /* GroupStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC6DD20291A0A4400767B78 /* GroupStateModel.swift */; };
 		8AC6DD23291ACD8500767B78 /* OrigGroupStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC6DD22291ACD8500767B78 /* OrigGroupStateModel.swift */; };
 		8AC6DD25291C36D900767B78 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC6DD24291C36D900767B78 /* Group.swift */; };
+		8AC6DD27291DA18400767B78 /* BeerStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC6DD26291DA18400767B78 /* BeerStateModel.swift */; };
 		BE9310123767B7B6321F0B43 /* Pods_Messenger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B7AEBEB773027514C6F28A0 /* Pods_Messenger.framework */; };
 /* End PBXBuildFile section */
 
@@ -75,6 +76,7 @@
 		8AC6DD20291A0A4400767B78 /* GroupStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupStateModel.swift; sourceTree = "<group>"; };
 		8AC6DD22291ACD8500767B78 /* OrigGroupStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrigGroupStateModel.swift; sourceTree = "<group>"; };
 		8AC6DD24291C36D900767B78 /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
+		8AC6DD26291DA18400767B78 /* BeerStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerStateModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -224,6 +226,7 @@
 				6E8EEEC227FE5725007CACFC /* GroupUser.swift */,
 				6E52B8C52807705200A5D729 /* User.swift */,
 				833EE90B262B1D23004A9F9E /* AppStateModel.swift */,
+				8AC6DD26291DA18400767B78 /* BeerStateModel.swift */,
 				8AC6DD20291A0A4400767B78 /* GroupStateModel.swift */,
 				8AC6DD22291ACD8500767B78 /* OrigGroupStateModel.swift */,
 			);
@@ -404,6 +407,7 @@
 				25B50DC528174B6600BFEDCF /* ImagePicker.swift in Sources */,
 				2547150527F613C10019EF23 /* SearchAddToGroup.swift in Sources */,
 				6E52B8C82807796800A5D729 /* UserSearchRow.swift in Sources */,
+				8AC6DD27291DA18400767B78 /* BeerStateModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

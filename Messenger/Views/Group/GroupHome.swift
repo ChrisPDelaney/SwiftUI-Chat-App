@@ -137,6 +137,7 @@ struct GroupHome: View {
                 print("\n The bool inChat is \(model.inChat)")
                 
                 print("The group name before any functions is \(model2.currentGroupName)")
+                print("The group members before any functions called are \(model2.currentGroup)")
                 
                 //make sure the user is signed in, don't want to get conversations if there's no user
                 print("BEFORE RETURNING CURRENT USER IN GROUP HOME")
@@ -145,7 +146,11 @@ struct GroupHome: View {
                     return
                 }
                 
+                print("Calling getGroupName from frontend")
                 model2.getGroupName()
+                
+                print("The group name after all functions is \(model2.currentGroupName)")
+                print("The group members after all functions called are \(model2.currentGroup)")
                 
 //                print("The members of the current group after getting groupName are \(model2.currentGroup)")
 //

@@ -140,10 +140,17 @@ extension GroupStateModel {
     func getGroupName(){
         print("Inside getGroupName")
         print("Current user name is : \(currentUsername)")
-        print("The profile URL is: \(profileUrl)" )
+        //print("The profile URL is: \(profileUrl)" )
+        
+        print("The current group before emptying is \(self.currentGroup)")
+        print("The current group name before setting to null is \(self.currentGroupName)")
+        
         
         self.currentGroup = []
         self.currentGroupName = ""
+        
+        print("The current group after emptying is \(self.currentGroup)")
+        print("The current group name after setting to null is \(self.currentGroupName)")
         
         //get the current groupName from the database from within the user's document
 //        let docRef = database.collection("users").document(currentUsername)
@@ -166,6 +173,9 @@ extension GroupStateModel {
             .collection("users")
             .document(currentUsername)
             .collection("myGroups").addSnapshotListener { [weak self] snapshot, error in
+                
+                print("Inside the groupNameListener")
+                
                 guard let objects = snapshot?.documents.compactMap({ $0.data() }), //returns an array of dictionaries
                       error == nil else {
                     print("Error accessing groupName: \(String(describing: error))")
@@ -180,6 +190,8 @@ extension GroupStateModel {
                         inGroup: $0["inGroup"] as? Bool ?? false
                     )
                 })
+                
+                print("The groups retrieved from the database are \(groups)")
                 
                 var newGroupName: String = ""
                 
@@ -197,10 +209,17 @@ extension GroupStateModel {
                     // AND statement for UI loading efficiency, don't want to call getGroup2 here if
                     // the group has not changed, bc for that case the UI view already called getGroup
                     DispatchQueue.main.async {
+                        print("Inside the getGroupName dispatchQueue if groupName is not empty")
                         self?.currentGroupName = newGroupName
                         print("Just set the currentGroupName to \(self!.currentGroupName)")
                         self?.getGroup2()
                         print("Just called getGroup2 from inside getGroupName dispatch queue")
+                    }
+                }
+                else{
+                    DispatchQueue.main.async {
+                        print("Inside the getGroupName dispatchQueue if groupName empty")
+                        self?.currentGroup = []
                     }
                 }
                 
@@ -209,8 +228,7 @@ extension GroupStateModel {
     
     func getGroup2(){
         print("Inside getGroup2")
-        print("Current user name is :")
-        print(currentUsername)
+        print("Current user name is : \(currentUsername)")
         print("The profile URL is: \(profileUrl)" )
         
 //        if self.currentGroupName != ""
@@ -223,18 +241,28 @@ extension GroupStateModel {
                 .collection("groups")
                 .document(currentGroupName)
                 .collection("members").addSnapshotListener { [weak self] snapshot, error in
+                    
+                    print("Inside getGroup2's listener")
+                    
                     guard let objects = snapshot?.documents.compactMap({ $0.data() }), //returns an array of dictionaries
                           error == nil else {
                         return
                     }
 
+                    print("Retrieved objects \(objects) from the database")
+                    
                         DispatchQueue.main.async {
+                            
+                            print("Inside the dispatch queue for getGroup2")
+                            
                             self?.currentGroup = objects.map { data in
                                 return GroupUser(
                                     name: data["name"] as? String ?? "",
                                     beerCount: data["beerCount"] as? Int ?? 0
                                 )
                             }
+                            
+                            print("The current group is now \(self!.currentGroup)")
                         }
                     
                 } //end groupListener
@@ -247,6 +275,8 @@ extension GroupStateModel {
     func leaveGroup2(){
         print("Leave group called")
         self.groupListener?.remove()
+        print("Removed the group listener")
+        
         //remove user from the group's members collection
         database.collection("groups")
             .document(currentGroupName)
@@ -264,11 +294,15 @@ extension GroupStateModel {
             .collection("myGroups")
             .document(currentGroupName).setData(["inGroup": false], merge: true)
         
+        print("Completed all database changes/removals in leaveGroup2")
+        
         DispatchQueue.main.async {
             //print("The group before setting to empty is \(self.currentGroup)")
             //self.currentGroup = []
             //print("Just set currentGroup to empty. Now it is \(self.currentGroup)")
             //self.currentGroupName = ""
+            
+            print("Inside the dispatch queue for leaveGroup2")
             self.getGroupName()
             print("Just called getGroupName inside of leaveGroup2's dispatch queue")
         }

@@ -34,6 +34,9 @@
 		833EE90C262B1D23004A9F9E /* AppStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833EE90B262B1D23004A9F9E /* AppStateModel.swift */; };
 		8A2AF05728D524A60012392F /* NotificationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2AF05528D524A60012392F /* NotificationRow.swift */; };
 		8A2AF05828D524A60012392F /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2AF05628D524A60012392F /* NotificationView.swift */; };
+		8A794ABA2925515E006B6D8A /* SearchCreateGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A794AB92925515E006B6D8A /* SearchCreateGroup.swift */; };
+		8A794ABC29258247006B6D8A /* ChooseGroupName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A794ABB29258247006B6D8A /* ChooseGroupName.swift */; };
+		8A794ABE29258664006B6D8A /* ChooseGroupVenue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A794ABD29258664006B6D8A /* ChooseGroupVenue.swift */; };
 		8AC6DD21291A0A4400767B78 /* GroupStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC6DD20291A0A4400767B78 /* GroupStateModel.swift */; };
 		8AC6DD23291ACD8500767B78 /* OrigGroupStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC6DD22291ACD8500767B78 /* OrigGroupStateModel.swift */; };
 		8AC6DD25291C36D900767B78 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC6DD24291C36D900767B78 /* Group.swift */; };
@@ -73,6 +76,9 @@
 		833EE90B262B1D23004A9F9E /* AppStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateModel.swift; sourceTree = "<group>"; };
 		8A2AF05528D524A60012392F /* NotificationRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationRow.swift; sourceTree = "<group>"; };
 		8A2AF05628D524A60012392F /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
+		8A794AB92925515E006B6D8A /* SearchCreateGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCreateGroup.swift; sourceTree = "<group>"; };
+		8A794ABB29258247006B6D8A /* ChooseGroupName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseGroupName.swift; sourceTree = "<group>"; };
+		8A794ABD29258664006B6D8A /* ChooseGroupVenue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseGroupVenue.swift; sourceTree = "<group>"; };
 		8AC6DD20291A0A4400767B78 /* GroupStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupStateModel.swift; sourceTree = "<group>"; };
 		8AC6DD22291ACD8500767B78 /* OrigGroupStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrigGroupStateModel.swift; sourceTree = "<group>"; };
 		8AC6DD24291C36D900767B78 /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
@@ -133,6 +139,9 @@
 				6E52B8BF28070DDC00A5D729 /* CurrentUserRow.swift */,
 				6E8EEEB827FE2DED007CACFC /* GroupMemberRow.swift */,
 				2547150427F613C10019EF23 /* SearchAddToGroup.swift */,
+				8A794AB92925515E006B6D8A /* SearchCreateGroup.swift */,
+				8A794ABB29258247006B6D8A /* ChooseGroupName.swift */,
+				8A794ABD29258664006B6D8A /* ChooseGroupVenue.swift */,
 			);
 			path = Group;
 			sourceTree = "<group>";
@@ -385,6 +394,7 @@
 				6E52B8CA28077A1F00A5D729 /* UserProfile.swift in Sources */,
 				6E8EEEC327FE5725007CACFC /* GroupUser.swift in Sources */,
 				6E8EEEBB27FE2E23007CACFC /* GroupHome.swift in Sources */,
+				8A794ABA2925515E006B6D8A /* SearchCreateGroup.swift in Sources */,
 				8AC6DD25291C36D900767B78 /* Group.swift in Sources */,
 				8A2AF05828D524A60012392F /* NotificationView.swift in Sources */,
 				833EE8FA262B1CC7004A9F9E /* SignUpView.swift in Sources */,
@@ -400,12 +410,14 @@
 				6E416A562804AC2F001DCF24 /* ProfileView.swift in Sources */,
 				8A2AF05728D524A60012392F /* NotificationRow.swift in Sources */,
 				833EE900262B1CE2004A9F9E /* ChatRow.swift in Sources */,
+				8A794ABC29258247006B6D8A /* ChooseGroupName.swift in Sources */,
 				6E52B8C228074DA100A5D729 /* ContentView.swift in Sources */,
 				6E52B8C428074FF700A5D729 /* SearchView.swift in Sources */,
 				833EE8E3262B1C48004A9F9E /* MessengerApp.swift in Sources */,
 				833EE90C262B1D23004A9F9E /* AppStateModel.swift in Sources */,
 				25B50DC528174B6600BFEDCF /* ImagePicker.swift in Sources */,
 				2547150527F613C10019EF23 /* SearchAddToGroup.swift in Sources */,
+				8A794ABE29258664006B6D8A /* ChooseGroupVenue.swift in Sources */,
 				6E52B8C82807796800A5D729 /* UserSearchRow.swift in Sources */,
 				8AC6DD27291DA18400767B78 /* BeerStateModel.swift in Sources */,
 			);

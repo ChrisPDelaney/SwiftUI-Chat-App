@@ -30,10 +30,12 @@ struct NotificationNumLabel : View {
 struct GroupHome: View {
     @EnvironmentObject var model: AppStateModel
     @EnvironmentObject var model2: GroupStateModel
+    
     @State var otherUsernames: [String] = []
     @State var dayString: String = ""
     @State var showChat = false
     @State var showSearch = false
+    @State var createGroupSelected = false
     @State var inGroup = false
     
     @State var exampleNum: Int = 23
@@ -41,6 +43,9 @@ struct GroupHome: View {
     var body: some View {
         NavigationView {
             VStack {
+                
+                Text("Group Name: \(model2.currentGroupName)")
+                
                 //If a group exists then display the current user's name and picture with their beer count
                 ScrollView(.vertical) {
                     if let user = model2.currentGroup.first(where: {$0.name == model.currentUsername}) {
@@ -81,6 +86,14 @@ struct GroupHome: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Menu {
+                        if model2.currentGroupName == ""
+                        {
+                            Button(action: {
+                                self.createGroupSelected = true
+                            }) {
+                                Text("Create a group")
+                            }
+                        }
                         Button(action: {
                             self.showSearch = true
                         }) {
@@ -88,14 +101,12 @@ struct GroupHome: View {
                         }
                         if #available(iOS 15.0, *) {
                             Button(role: .destructive, action: {
-                                //model.leaveGroup()
                                 model2.leaveGroup2()
                             }) {
                                 Text("Leave Group")
                             }
                         } else {
                             Button(action: {
-                                //model.leaveGroup()
                                 model2.leaveGroup2()
                             }) {
                                 Text("Leave Group")
@@ -128,7 +139,7 @@ struct GroupHome: View {
                         }
                     )
                 }
-            }
+            }//END toolbar
             .fullScreenCover(isPresented: $model.showingSignIn, content: {
                 SignInView()
             })
@@ -172,15 +183,32 @@ struct GroupHome: View {
                 NavigationLink( //name will be the other user's name we tapped to start a convo with
                     destination: SearchAddToGroup { selected  in //JP
                         self.showSearch = false
-
                         //we want to wait for the search view to disappear before we try to show the chat view
+                        
+                        //case of adding members to the group
                         DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those //Consider changing
-                            //model.addToGroup(selected: selected)
                             model2.addToGroup2(groupName: "testGroupName2", selected: selected, groupLoc: "NY Metropolitan Area")
-                            
                         }
+                        
+                        
                     },
                     isActive: $showSearch //background is active when showSearch is true
+                ) { EmptyView() }
+            )
+            .background(
+                NavigationLink( //name will be the other user's name we tapped to start a convo with
+                    destination: SearchCreateGroup { selected  in //JP
+                        self.createGroupSelected = false
+                        //we want to wait for the search view to disappear before we try to show the chat view
+                        
+                        //case of creating new group from scratch
+                        DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those
+                            model2.createGroup2(groupName: "testGroupName2", selected: selected, groupLoc: "NY Metropolitan Area")
+                            
+                        }
+                        
+                    },
+                    isActive: $createGroupSelected //background is active when createGroupSelected is true
                 ) { EmptyView() }
             )
         }

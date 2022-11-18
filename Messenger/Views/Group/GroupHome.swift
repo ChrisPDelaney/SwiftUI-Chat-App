@@ -94,23 +94,31 @@ struct GroupHome: View {
                                 Text("Create a group")
                             }
                         }
-                        Button(action: {
-                            self.showSearch = true
-                        }) {
-                            Text("Add Members to Group")
-                        }
-                        if #available(iOS 15.0, *) {
-                            Button(role: .destructive, action: {
-                                model2.leaveGroup2()
-                            }) {
-                                Text("Leave Group")
-                            }
-                        } else {
+                        else{
                             Button(action: {
-                                model2.leaveGroup2()
+                                self.showSearch = true
                             }) {
-                                Text("Leave Group")
-                            }                        }
+                                Text("Add Members to Group")
+                            }
+                            if #available(iOS 15.0, *) {
+                                Button(role: .destructive, action: {
+                                    model2.leaveGroup2()
+                                }) {
+                                    Text("Leave Group")
+                                }
+                            } else {
+                                Button(action: {
+                                    model2.leaveGroup2()
+                                }) {
+                                    Text("Leave Group")
+                                }
+                            }
+                            Button(action: {
+                                model2.endGroup()
+                            }) {
+                                Text("End Group")
+                            }
+                        }
                         if #available(iOS 15.0, *) {
                             Button(role: .destructive, action: {
                                 model.signOut()
@@ -197,13 +205,13 @@ struct GroupHome: View {
             )
             .background(
                 NavigationLink( //name will be the other user's name we tapped to start a convo with
-                    destination: SearchCreateGroup { selected  in //JP
+                    destination: SearchCreateGroup { selected, name  in //JP
                         self.createGroupSelected = false
                         //we want to wait for the search view to disappear before we try to show the chat view
                         
                         //case of creating new group from scratch
                         DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those
-                            model2.createGroup2(groupName: "testGroupName2", selected: selected, groupLoc: "NY Metropolitan Area")
+                            model2.createGroup2(groupName: name, selected: selected, groupLoc: "NY Metropolitan Area")
                             
                         }
                         

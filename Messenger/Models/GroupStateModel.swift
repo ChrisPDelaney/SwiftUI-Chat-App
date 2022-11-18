@@ -83,12 +83,20 @@ extension GroupStateModel {
         //Add members to the group members collection.
         // And for each member set their inGroup to true along with a field for the groupName
         for user in selected{
+            //for all members being added, set their name and beerCount in the group document member collection
             database.collection("groups").document(groupName).collection("members").document(user).setData(["name": user, "beerCount": 0])
+            
+            //in each member's individual document set their inGroup to true and their groupName to groupName
             database.collection("users")
                 .document(user).setData(["inGroup": true,
                                          "groupName": groupName], merge: true)
             
-        }
+            database.collection("users")
+                .document(user).collection("myGroups")
+                .document(groupName).setData(["inGroup": true,
+                                              "groupName": groupName], merge: true)
+            
+        }//END for user
         
         
     }
@@ -104,7 +112,8 @@ extension GroupStateModel {
     
     func addToGroup2(groupName: String, selected: [String], groupLoc: String)
     {
-        //if this is a member without a group, they are creating a group
+        //when user has no group button to add group should be blocked. So maybe make this throw error
+        // if groupName is empty
         if self.currentGroupName == ""
         {
             //set the local AppStorage groupName
@@ -128,12 +137,13 @@ extension GroupStateModel {
                 .document(user).setData(["inGroup": true,
                                          "groupName": groupName], merge: true)
             
+            //populate the groups collection for each member with the new groupName and inGroup to true
             database.collection("users")
                 .document(user).collection("myGroups")
                 .document(groupName).setData(["inGroup": true,
                                               "groupName": groupName], merge: true)
             
-        }//END for user
+        } //END for user
         
     }
     
@@ -306,6 +316,65 @@ extension GroupStateModel {
             self.getGroupName()
             print("Just called getGroupName inside of leaveGroup2's dispatch queue")
         }
+        
+    }
+    
+    func endGroup(){
+        print("Inside endGroup function")
+        
+        database.collection("groups")
+            .document(currentGroupName)
+            .collection("members")
+            .getDocuments { [self] (snapshot, error) in
+                 guard let snapshot = snapshot, error == nil else {
+                  //handle error
+                  return
+                }
+                print("Number of documents: \(snapshot.documents.count ?? -1)")
+                
+                    
+                let members = snapshot.documents.map { data in
+                    return GroupUser(
+                        name: data["name"] as? String ?? "",
+                        beerCount: data["beerCount"] as? Int ?? 0
+                    )
+                }
+                
+                //for user in currentGroup{
+                for member in members{
+                    
+                    print("Member name is \(member.name)")
+                    
+                    //set every member's field inGroup to false and groupName to empty string
+                    database.collection("users")
+                        .document(member.name).setData(["inGroup": false,
+                                                 "groupName": ""], merge: true)
+                    
+                    //remove the group from the each members group collection
+                    database.collection("users")
+                        .document(member.name).collection("myGroups")
+                        .document(self.currentGroupName).delete()
+                    
+                    self.database.collection("groups")
+                        .document(self.currentGroupName)
+                        .collection("members")
+                        .document(member.name).delete()
+                    
+                } //END for user
+                
+                //delete the group from the groups collection in database
+                self.database.collection("groups").document(self.currentGroupName).delete()
+                
+                
+                DispatchQueue.main.async {
+                    self.getGroupName()
+                }
+                    
+//                  let quote = documentData["Quote"] as? String
+//                  let url = documentData["Url"] as? String
+//                  print("Quote: \(quote ?? "(unknown)")")
+//                  print("Url: \(url ?? "(unknown)")")
+            }
         
     }
     

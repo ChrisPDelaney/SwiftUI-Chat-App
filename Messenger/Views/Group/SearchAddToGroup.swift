@@ -121,7 +121,7 @@ struct SearchAddToGroup: View {
             }
 
             Spacer()
-        }   
+        }//END Vstack
         .navigationTitle("Search")
     }
 }

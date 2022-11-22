@@ -110,38 +110,30 @@ extension GroupStateModel {
         }
     }
     
-    func addToGroup2(groupName: String, selected: [String], groupLoc: String)
+    func addToGroup2(selected: [String])
     {
         //when user has no group button to add group should be blocked. So maybe make this throw error
         // if groupName is empty
         if self.currentGroupName == ""
         {
-            //set the local AppStorage groupName
-            self.currentGroupName = groupName
-            
-            //set the group document up in Firebase
-            database.collection("groups").document(groupName).setData([
-                        "groupName": groupName,
-                        "groupLocation": groupLoc]) { error in
-                            guard error == nil else { return }
-                            
-                    }
+            print("Error, no current group exists")
+            return
         }
         
         for user in selected{
             //for all members being added, set their name and beerCount in the group member collection
-            database.collection("groups").document(groupName).collection("members").document(user).setData(["name": user, "beerCount": 0])
+            database.collection("groups").document(self.currentGroupName).collection("members").document(user).setData(["name": user, "beerCount": 0])
             
             //in each member's individual document set their inGroup to true and their groupName to name
             database.collection("users")
                 .document(user).setData(["inGroup": true,
-                                         "groupName": groupName], merge: true)
+                                         "groupName": self.currentGroupName], merge: true)
             
             //populate the groups collection for each member with the new groupName and inGroup to true
             database.collection("users")
                 .document(user).collection("myGroups")
-                .document(groupName).setData(["inGroup": true,
-                                              "groupName": groupName], merge: true)
+                .document(self.currentGroupName).setData(["inGroup": true,
+                                              "groupName": self.currentGroupName], merge: true)
             
         } //END for user
         

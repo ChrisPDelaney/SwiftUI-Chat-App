@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct ChooseGroupName: View {
+    @State var popToRootView : Binding<Bool>
+    
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     @State var text: String = ""
     
     let completion: ((String) -> Void)
 
-    init(completion: @escaping ((String) -> Void)) {
+    init(shouldPopToRootView: Binding<Bool>, completion: @escaping ((String) -> Void)) {
+        self._popToRootView = State(initialValue: shouldPopToRootView)
         self.completion = completion
+        print("In init for ChooseGroupName")
     }
     
     var body: some View {
@@ -55,7 +59,9 @@ struct ChooseGroupName: View {
                 Spacer()
                 Button {
                     if self.text != ""{
-                        presentationMode.wrappedValue.dismiss()//this will dismiss the view
+                        self.popToRootView = .constant(false)
+                        //presentationMode.wrappedValue.dismiss()//this will dismiss the view
+                        print("Just dismissed the view for ChooseGroupName")
                         completion(self.text)
                     }
                 }
@@ -76,7 +82,7 @@ struct ChooseGroupName: View {
 
 struct ChooseGroupName_Previews: PreviewProvider {
     static var previews: some View {
-        ChooseGroupName(){ name in
+        ChooseGroupName(shouldPopToRootView: .constant(true)){ name in
             
         }
     }

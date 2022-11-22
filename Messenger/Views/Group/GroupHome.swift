@@ -38,8 +38,21 @@ struct GroupHome: View {
     @State var createGroupSelected = false
     @State var inGroup = false
     
+    @State var iOS15 = false
+    
     @State var exampleNum: Int = 23
 
+    init() {
+        print("In init for GroupHome")
+        if #available(iOS 15.0, *) {
+            iOS15 = true
+            print("In iOS 15")
+        } else {
+            iOS15 = false
+            print("Not in iOS15")
+        }
+    }
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -113,10 +126,18 @@ struct GroupHome: View {
                                     Text("Leave Group")
                                 }
                             }
-                            Button(action: {
-                                model2.endGroup()
-                            }) {
-                                Text("End Group")
+                            if #available(iOS 15.0, *) {
+                                Button(role: .destructive, action: {
+                                    model2.endGroup()
+                                }) {
+                                    Text("End Group")
+                                }
+                            } else {
+                                Button(action: {
+                                    model2.endGroup()
+                                }) {
+                                    Text("End Group")
+                                }
                             }
                         }
                         if #available(iOS 15.0, *) {
@@ -195,7 +216,7 @@ struct GroupHome: View {
                         
                         //case of adding members to the group
                         DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those //Consider changing
-                            model2.addToGroup2(groupName: "testGroupName2", selected: selected, groupLoc: "NY Metropolitan Area")
+                            model2.addToGroup2(selected: selected)
                         }
                         
                         
@@ -205,20 +226,47 @@ struct GroupHome: View {
             )
             .background(
                 NavigationLink( //name will be the other user's name we tapped to start a convo with
-                    destination: SearchCreateGroup { selected, name  in //JP
+                    destination: SearchCreateGroup(isActive: self.$createGroupSelected) { selected, name  in //JP
+                        
+                        print("Inside brackets after navLink to searchCreateGroup")
+                        
                         self.createGroupSelected = false
                         //we want to wait for the search view to disappear before we try to show the chat view
                         
                         //case of creating new group from scratch
                         DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those
-                            model2.createGroup2(groupName: name, selected: selected, groupLoc: "NY Metropolitan Area")
+                            print("Calling createGroup inside dispatchQueue")
+                            model2.createGroup2(groupName: name, selected: selected, groupLoc: "DC Area")
                             
                         }
                         
                     },
                     isActive: $createGroupSelected //background is active when createGroupSelected is true
-                ) { EmptyView() }
+                ){
+                    EmptyView()
+                }
+                .isDetailLink(false)
             )
+//            .background(
+//                NavigationLink( //name will be the other user's name we tapped to start a convo with
+//                    destination: SearchCreateGroup15 { selected, name  in //JP
+//
+//                        print("Inside brackets after navLink to searchCreateGroup")
+//
+//                        self.createGroupSelected = false
+//                        //we want to wait for the search view to disappear before we try to show the chat view
+//
+//                        //case of creating new group from scratch
+//                        DispatchQueue.main.asyncAfter(deadline: .now()+1) { //add delay to assigning those
+//                            print("Calling createGroup inside dispatchQueue")
+//                            model2.createGroup2(groupName: name, selected: selected, groupLoc: "NY Metropolitan Area")
+//
+//                        }
+//
+//                    },
+//                    isActive: $createGroupSelected && $iOS15 //background is active when createGroupSelected is true
+//                ) { EmptyView() }
+//            )
         }
     }
 

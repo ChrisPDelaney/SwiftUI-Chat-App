@@ -9,8 +9,13 @@ import SwiftUI
 
 struct SearchCreateGroup: View {
     
+    @State var rootIsActive : Binding<Bool>
+    
     //Allows you to dismiss given presentation by using this property wrapper
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    //@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    //Got rid of using presentationMode.dismiss() because it is not efficient for loading views
+    // According to https://jayeshkawli.ghost.io/correct-way-to-dismiss-screen-in-swiftui/
+    
     @EnvironmentObject var model: AppStateModel
     @State var text: String = ""
 
@@ -20,8 +25,11 @@ struct SearchCreateGroup: View {
         
     let completion: (([String], String) -> Void)
 
-    init(completion: @escaping (([String], String) -> Void)) {
+    init(isActive: Binding<Bool>, completion: @escaping (([String], String) -> Void)) {
+        //requires this syntax bc its a state variable and a binding. Should look into reasoning more
+        self._rootIsActive = State(initialValue: isActive)
         self.completion = completion
+        print("In init for SearchCreateGroup")
     }
     
     var body: some View {//test comment
@@ -116,9 +124,15 @@ struct SearchCreateGroup: View {
                     //selected.append(model.currentUsername)
                     //presentationMode.wrappedValue.dismiss()//this will dismiss the search view
                     //completion(selected) //date not name JP
-                    ChooseGroupName(){ name in
+                    ChooseGroupName(shouldPopToRootView: self.rootIsActive){ name in
                         selected.append(model.currentUsername)
-                        presentationMode.wrappedValue.dismiss()//this will dismiss the search view
+                        
+                        //this will dismiss the search view
+                        //presentationMode.wrappedValue.dismiss()
+                        
+                        self.rootIsActive = .constant(false)
+                        
+                        print("Just dismissed the presentationMode on SearchCreateGroup")
                         completion(selected, name)
                         
                     }
@@ -139,6 +153,7 @@ struct SearchCreateGroup: View {
                                 )
                         )
                 } //END navLink label
+                .isDetailLink(false)
                 
             }//END hstack
             
@@ -147,9 +162,11 @@ struct SearchCreateGroup: View {
     }
 }
 
-struct SearchCreateGroup_Previews: PreviewProvider {
-    static var previews: some View {
-        SearchCreateGroup() {_, name in}
-            .preferredColorScheme(.dark)
-    }
-}
+//struct SearchCreateGroup_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SearchCreateGroup(isActive: true){ name, _  in
+//
+//        }
+//            .preferredColorScheme(.dark)
+//    }
+//}

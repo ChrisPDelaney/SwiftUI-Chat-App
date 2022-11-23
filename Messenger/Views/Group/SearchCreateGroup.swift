@@ -13,8 +13,12 @@ struct SearchCreateGroup: View {
     
     //Allows you to dismiss given presentation by using this property wrapper
     //@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    
     //Got rid of using presentationMode.dismiss() because it is not efficient for loading views
     // According to https://jayeshkawli.ghost.io/correct-way-to-dismiss-screen-in-swiftui/
+    
+    //Would also need to use the newer version for iOS 15 anyway
+    //@Environment(\.dismiss) private var dismiss
     
     @EnvironmentObject var model: AppStateModel
     @State var text: String = ""

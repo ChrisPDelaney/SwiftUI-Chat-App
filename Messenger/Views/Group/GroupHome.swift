@@ -30,6 +30,7 @@ struct NotificationNumLabel : View {
 struct GroupHome: View {
     @EnvironmentObject var model: AppStateModel
     @EnvironmentObject var model2: GroupStateModel
+    @EnvironmentObject var msgModel: MessagesModel
     
     @State var otherUsernames: [String] = []
     @State var dayString: String = ""
@@ -192,21 +193,8 @@ struct GroupHome: View {
                 print("The group name after all functions is \(model2.currentGroupName)")
                 print("The group members after all functions called are \(model2.currentGroup)")
                 
-//                print("The members of the current group after getting groupName are \(model2.currentGroup)")
-//
-//                guard model2.currentGroupName != "" else{
-//                    print("There is no current group")
-//                    return
-//                }
-//
-//                print("The members of the current group after guard statement are \(model2.currentGroup)")
-//
-//                //model.getGroup()
-//                model2.getGroup2()
-//                print("MODEL.GETGROUP EXECUTED")
-                
                 //Here call the new function to get number of new messages
-                //model.getNewMsgs()
+                msgModel.getMsgsFromGroupDoc()
             }
             .background(
                 NavigationLink( //name will be the other user's name we tapped to start a convo with

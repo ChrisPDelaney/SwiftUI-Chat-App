@@ -36,21 +36,17 @@ class GroupStateModel: ObservableObject {
     @Published var showingSignIn: Bool = true
     @Published var currentGroup: [GroupUser] = []
     //@Published var currentGroupName: String = ""
-    @Published var messages: [Message] = []
     
-    @Published var unReadMsgs: Int = 0
-    @Published var inChat: Bool = false
 
     let database = Firestore.firestore()
     let auth = Auth.auth()
 
     var groupListener: ListenerRegistration?
     var groupNameListener: ListenerRegistration?
-    var newMsgListener: ListenerRegistration?
-    var chatListener: ListenerRegistration?
-    var beerListener: ListenerRegistration?
-
+    
     private let defaults = UserDefaults.standard
+    
+    let msgModel = MessagesModel()
     
     //immediatley when the app is opened, it che
     init() {
@@ -253,19 +249,22 @@ extension GroupStateModel {
 
                     print("Retrieved objects \(objects) from the database")
                     
-                        DispatchQueue.main.async {
+                    DispatchQueue.main.async { [weak self] in
                             
-                            print("Inside the dispatch queue for getGroup2")
-                            
-                            self?.currentGroup = objects.map { data in
-                                return GroupUser(
-                                    name: data["name"] as? String ?? "",
-                                    beerCount: data["beerCount"] as? Int ?? 0
-                                )
-                            }
-                            
-                            print("The current group is now \(self!.currentGroup)")
+                        print("Inside the dispatch queue for getGroup2")
+                        
+                        self?.currentGroup = objects.map { data in
+                            return GroupUser(
+                                name: data["name"] as? String ?? "",
+                                beerCount: data["beerCount"] as? Int ?? 0
+                            )
                         }
+                        
+                        print("The current group is now \(self!.currentGroup)")
+                        
+                        //May not want to do this. Other option is calling in GroupHome view
+                        //self!.msgModel.getMsgsFromGroupDoc()
+                    }
                     
                 } //end groupListener
             

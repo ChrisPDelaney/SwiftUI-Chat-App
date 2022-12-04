@@ -10,7 +10,7 @@ import SwiftUI
 struct SendButton: View {
     @Binding var text: String
     @EnvironmentObject var model: AppStateModel
-    @EnvironmentObject var msgModel: MessagesModel
+    @EnvironmentObject var model2: GroupStateModel
 
     var body: some View {
         Button(action: {
@@ -31,7 +31,7 @@ struct SendButton: View {
             return
         }
 
-        msgModel.sendMessage(text: text)
+        model2.sendMessage(text: text)
         
         print(text)
 

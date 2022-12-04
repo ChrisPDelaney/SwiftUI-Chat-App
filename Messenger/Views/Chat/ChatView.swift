@@ -20,7 +20,7 @@ struct CustomField: ViewModifier {
 struct ChatView: View {
     @State var message: String = ""
     @EnvironmentObject var model: AppStateModel
-    @EnvironmentObject var msgModel: MessagesModel
+    @EnvironmentObject var model2: GroupStateModel
     
     var body: some View {
         VStack { 
@@ -58,7 +58,7 @@ struct ChatView: View {
         .onAppear { //start observing the conversation that we're in
             model.inChat = true
             print("The bool inChat is \(model.inChat)")
-            msgModel.getMsgsFromGroupDoc()
+            model2.getMsgsFromGroupDoc()
         }
     }
 }

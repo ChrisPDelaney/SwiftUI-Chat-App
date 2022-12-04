@@ -20,8 +20,6 @@ import WebKit
 //So each member of the group listens to the group document's members collection as opposed to their own
 // document's members collection
 
-//At the moment there are problems for the listener, because of the case where a user is not in a group,
-// there needs to be a check for a group name, which makes the real time aspect require reloading the page
 
 class GroupStateModel: ObservableObject {
     @AppStorage("currentUsername") var currentUsername: String = ""
@@ -33,20 +31,28 @@ class GroupStateModel: ObservableObject {
     @AppStorage("currentVenue") var currentVenue: String = "The Tombs" //added
     @AppStorage("currentGroupName") var currentGroupName: String = ""
     
+    let database = Firestore.firestore()
+    let auth = Auth.auth()
+
+    private let defaults = UserDefaults.standard
+    
+    //Group variables
+    
     @Published var showingSignIn: Bool = true
     @Published var currentGroup: [GroupUser] = []
     //@Published var currentGroupName: String = ""
     
-
-    let database = Firestore.firestore()
-    let auth = Auth.auth()
-
     var groupListener: ListenerRegistration?
     var groupNameListener: ListenerRegistration?
     
-    private let defaults = UserDefaults.standard
+    //Messaging variables
     
-    let msgModel = MessagesModel()
+    var newMsgListener: ListenerRegistration?
+    var groupDocListener: ListenerRegistration?
+    
+    @Published var messages: [Message] = []
+    @Published var unReadMsgs: Int = 0
+    @Published var inChat: Bool = false
     
     //immediatley when the app is opened, it che
     init() {
@@ -262,8 +268,7 @@ extension GroupStateModel {
                         
                         print("The current group is now \(self!.currentGroup)")
                         
-                        //May not want to do this. Other option is calling in GroupHome view
-                        //self!.msgModel.getMsgsFromGroupDoc()
+                        self!.getMsgsFromGroupDoc()
                     }
                     
                 } //end groupListener
@@ -369,6 +374,188 @@ extension GroupStateModel {
         
     }
     
+}//END extension
 
+
+//Messaging of the group
+extension GroupStateModel {
+    func getMsgsFromGroupDoc(){
+        print("Inside function getMsgsFromGroupDoc")
+        
+        if self.currentGroupName == ""{
+            print("No current group name returning")
+            return
+        }
+        
+        print("past error checking in getMsgsFromGroupDoc")
+        
+        groupDocListener = database
+            .collection("groups")
+            .document(currentGroupName) // should be each user
+            .collection("messages")
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let objects = snapshot?.documents.compactMap({ $0.data() }), //returns an array of dictionaries
+                      error == nil else {
+                    return
+                }
+                
+                //holds text, type, created date
+                let messages: [Message] = objects.compactMap({//taking the text, sender, and created pieces out, casting them to appropriate expected types
+                    guard let date = ISO8601DateFormatter().date(from: $0["created"] as? String ?? "") else {
+                        return nil
+                    }
+                    return Message(
+                        id: $0["id"] as? String ?? "",
+                        text: $0["text"] as? String ?? "",
+                        //set username here rather than doing the type
+                        type: $0["sender"] as? String == self?.currentUsername ? .sent : .received,
+                        sender: $0["sender"] as? String ?? "",
+                        created: date,
+                        read: $0["read"] as? Bool ?? false
+                    )
+                })
+                
+                for msg in messages{
+                    
+                    let data = [
+                        "id": msg.id,
+                        "text": msg.text,
+                        "sender": msg.sender,
+                        "created": msg.created,
+                        "read": msg.read
+                    ] as [String : Any]
+                    
+                    self!.database.collection("users")
+                        .document(self!.currentUsername) // should be each user
+                        .collection("myGroups")
+                        .document(self!.currentGroupName)
+                        .collection("messages")
+                        .document(msg.id)
+                        .setData(data, merge: true)
+                    
+                }//END for msg in messages
+                
+                
+                
+                
+            }//END snapshot listener
+    }
+    
+    func getNewMsgs(){
+        print("Inside function getNewMsgs")
+        newMsgListener = database
+            .collection("users")
+            .document(currentUsername)
+            .collection("messages")
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let objects = snapshot?.documents.compactMap({ $0.data() }), //returns an array of dictionaries
+                      error == nil else {
+                    return
+                }
+                
+                //holds text, type, created date
+                let messages: [Message] = objects.compactMap({//taking the text, sender, and created pieces out, casting them to appropriate expected types
+                    guard let date = ISO8601DateFormatter().date(from: $0["created"] as? String ?? "") else {
+                        return nil
+                    }
+                    return Message(
+                        id: $0["id"] as? String ?? "",
+                        text: $0["text"] as? String ?? "",
+                        //set username here rather than doing the type
+                        type: $0["sender"] as? String == self?.currentUsername ? .sent : .received,
+                        sender: $0["sender"] as? String ?? "",
+                        created: date,
+                        read: $0["read"] as? Bool ?? false
+                    )
+                }).sorted(by: { first, second in
+                    return first.created < second.created
+                })
+                
+                if self?.inChat == true
+                {
+                    print("Inside inChat == True")
+                    
+                    for msg in messages
+                    {
+                        if msg.read == false
+                        {
+                            print("Message id is \(msg.id)")
+                            self!.database.collection("users").document(self!.currentUsername ).collection("messages").document(msg.id).setData([ "read": true ], merge: true) { err in
+                                if let err = err {
+                                    print("Error writing document: \(err)")
+                                } else {
+                                    print("Document successfully written!")
+                                }
+                            }
+                        }//END if msg read == false
+                    }//END for loop
+                    
+                    print("Exited for loop making all messages read")
+                    
+                    DispatchQueue.main.async
+                    {
+                        self?.unReadMsgs = 0
+                        self?.messages = messages
+                    }
+                }
+                else
+                {
+                    print("Inside inChat == False")
+                    
+                    var newMsgNum: Int = 0
+                    for msg in messages{
+                        if msg.read == false
+                        {
+                            newMsgNum += 1
+                        }//END if msg read == false
+                    }//END for loop
+                    
+                    print("Exited for loop in getNumNew")
+            
+                    
+                    DispatchQueue.main.async {
+                        self?.unReadMsgs = newMsgNum
+                        self?.messages = messages
+                        print("Inside dispatch queue the number of unread messages are \(String(describing: self?.unReadMsgs))")
+                    }
+                    
+                    print("The number of unread messages are \(String(describing: self?.unReadMsgs))")
+                }
+                
+                
+            }//END snapshot listener
+    }
+    
+    func sendMessage(text: String) {
+        let newMessageId = UUID().uuidString
+        let dateString = ISO8601DateFormatter().string(from: Date())
+
+        guard !dateString.isEmpty else {
+            return
+        }
+
+        let data = [
+            "id": newMessageId,
+            "text": text,
+            "sender": currentUsername,
+            "created": dateString,
+            "read": false
+        ] as [String : Any]
+
+        database.collection("groups")
+            .document(currentGroupName) // should be each user
+            .collection("messages")
+            .document(newMessageId)
+            .setData(data)
+        
+        //loop here forEach username in GCUsers
+//        for user in currentGroup {
+//            database.collection("users")
+//                .document(user.name) // should be each user
+//                .collection("messages")
+//                .document(newMessageId)
+//                .setData(data)
+//        }
+    }//END sendMessage
 }
 

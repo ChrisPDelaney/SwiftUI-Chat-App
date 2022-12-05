@@ -417,21 +417,64 @@ extension GroupStateModel {
                 
                 for msg in messages{
                     
-                    let data = [
-                        "id": msg.id,
-                        "text": msg.text,
-                        "sender": msg.sender,
-                        "created": msg.created,
-                        "read": msg.read
-                    ] as [String : Any]
+                    //print("Looking at message: \(msg.text)")
                     
-                    self!.database.collection("users")
+                    //check if msg present, if so don't update read bool
+                    
+                    let docRef = self!.database.collection("users")
                         .document(self!.currentUsername) // should be each user
                         .collection("myGroups")
                         .document(self!.currentGroupName)
                         .collection("messages")
                         .document(msg.id)
-                        .setData(data, merge: true)
+                    
+                    docRef.getDocument{ (document, error) in
+                        if let document = document, document.exists {
+                            //if the document exists in the user's doc already, don't want to
+                            // change the read bool
+                            
+                            //print("Document exists")
+                            //let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
+                            //print("Document data: \(dataDescription)")
+                            
+                            let data = [
+                                "id": msg.id,
+                                "text": msg.text,
+                                "sender": msg.sender,
+                                "created": msg.created,
+                            ] as [String : Any]
+                            
+                            self!.database.collection("users")
+                                .document(self!.currentUsername) // should be each user
+                                .collection("myGroups")
+                                .document(self!.currentGroupName)
+                                .collection("messages")
+                                .document(msg.id)
+                                .setData(data, merge: true)
+                            
+                        }
+                        else {
+                            //if the msg is not in the user's doc, then just set read to false
+                            
+                            print("Document does not exist for message \(msg.text)")
+                            
+                            let data = [
+                                "id": msg.id,
+                                "text": msg.text,
+                                "sender": msg.sender,
+                                "created": msg.created,
+                                "read": msg.read
+                            ] as [String : Any]
+                            
+                            self!.database.collection("users")
+                                .document(self!.currentUsername) // should be each user
+                                .collection("myGroups")
+                                .document(self!.currentGroupName)
+                                .collection("messages")
+                                .document(msg.id)
+                                .setData(data, merge: true)
+                        }
+                    }//END getDocument
                     
                 }//END for msg in messages
                 
@@ -446,6 +489,8 @@ extension GroupStateModel {
         newMsgListener = database
             .collection("users")
             .document(currentUsername)
+            .collection("myGroups")
+            .document(currentGroupName)
             .collection("messages")
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let objects = snapshot?.documents.compactMap({ $0.data() }), //returns an array of dictionaries
@@ -480,7 +525,7 @@ extension GroupStateModel {
                         if msg.read == false
                         {
                             print("Message id is \(msg.id)")
-                            self!.database.collection("users").document(self!.currentUsername ).collection("messages").document(msg.id).setData([ "read": true ], merge: true) { err in
+                            self!.database.collection("users").document(self!.currentUsername ).collection("myGroups").document(self!.currentGroupName).collection("messages").document(msg.id).setData([ "read": true ], merge: true) { err in
                                 if let err = err {
                                     print("Error writing document: \(err)")
                                 } else {

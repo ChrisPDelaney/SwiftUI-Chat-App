@@ -421,64 +421,90 @@ extension GroupStateModel {
                     
                     //check if msg present, if so don't update read bool
                     
-                    let docRef = self!.database.collection("users")
+//                    let docRef = self!.database.collection("users")
+//                        .document(self!.currentUsername) // should be each user
+//                        .collection("myGroups")
+//                        .document(self!.currentGroupName)
+//                        .collection("messages")
+//                        .document(msg.id)
+//
+//                    docRef.getDocument{ (document, error) in
+//                        if let document = document, document.exists {
+//                            //if the document exists in the user's doc already, don't want to
+//                            // change the read bool
+//
+//                            //print("Document exists")
+//                            //let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
+//                            //print("Document data: \(dataDescription)")
+//
+//                            let data = [
+//                                "id": msg.id,
+//                                "text": msg.text,
+//                                "sender": msg.sender,
+//                                "created": msg.created,
+//                            ] as [String : Any]
+//
+//                            self!.database.collection("users")
+//                                .document(self!.currentUsername) // should be each user
+//                                .collection("myGroups")
+//                                .document(self!.currentGroupName)
+//                                .collection("messages")
+//                                .document(msg.id)
+//                                .setData(data, merge: true)
+//
+//                        }
+//                        else {
+//                            //if the msg is not in the user's doc, then just set read to false
+//
+//                            print("Document does not exist for message \(msg.text)")
+//
+//                            let data = [
+//                                "id": msg.id,
+//                                "text": msg.text,
+//                                "sender": msg.sender,
+//                                "created": msg.created,
+//                                "read": msg.read
+//                            ] as [String : Any]
+//
+//                            self!.database.collection("users")
+//                                .document(self!.currentUsername) // should be each user
+//                                .collection("myGroups")
+//                                .document(self!.currentGroupName)
+//                                .collection("messages")
+//                                .document(msg.id)
+//                                .setData(data, merge: true)
+//                        }
+//                    }//END getDocument
+                    
+                    //need to convert the date back into a string to write to DB and store it
+                    // then when the getNewMsgs func retrieves the date, it can convert
+                    // it from a string into a date.
+                    
+                    //I don't think it's possible to store a date object in firebase, but
+                    // the conversion is definitely needed for the newMsg listener to convert
+                    // the date string into a date object for the message object it creates
+                    
+                    let data = [
+                        "id": msg.id,
+                        "text": msg.text,
+                        "sender": msg.sender,
+                        "created": ISO8601DateFormatter().string(from: msg.created),
+                    ] as [String : Any]
+                    
+                    self!.database.collection("users")
                         .document(self!.currentUsername) // should be each user
                         .collection("myGroups")
                         .document(self!.currentGroupName)
                         .collection("messages")
                         .document(msg.id)
-                    
-                    docRef.getDocument{ (document, error) in
-                        if let document = document, document.exists {
-                            //if the document exists in the user's doc already, don't want to
-                            // change the read bool
-                            
-                            //print("Document exists")
-                            //let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
-                            //print("Document data: \(dataDescription)")
-                            
-                            let data = [
-                                "id": msg.id,
-                                "text": msg.text,
-                                "sender": msg.sender,
-                                "created": msg.created,
-                            ] as [String : Any]
-                            
-                            self!.database.collection("users")
-                                .document(self!.currentUsername) // should be each user
-                                .collection("myGroups")
-                                .document(self!.currentGroupName)
-                                .collection("messages")
-                                .document(msg.id)
-                                .setData(data, merge: true)
-                            
-                        }
-                        else {
-                            //if the msg is not in the user's doc, then just set read to false
-                            
-                            print("Document does not exist for message \(msg.text)")
-                            
-                            let data = [
-                                "id": msg.id,
-                                "text": msg.text,
-                                "sender": msg.sender,
-                                "created": msg.created,
-                                "read": msg.read
-                            ] as [String : Any]
-                            
-                            self!.database.collection("users")
-                                .document(self!.currentUsername) // should be each user
-                                .collection("myGroups")
-                                .document(self!.currentGroupName)
-                                .collection("messages")
-                                .document(msg.id)
-                                .setData(data, merge: true)
-                        }
-                    }//END getDocument
+                        .setData(data, merge: true)
                     
                 }//END for msg in messages
                 
-                
+                DispatchQueue.main.async { [weak self] in
+                    print("Inside the dispatch queue for getMsgsFromGroupDoc")
+                    self!.getNewMsgs()
+                }
                 
                 
             }//END snapshot listener
@@ -486,6 +512,8 @@ extension GroupStateModel {
     
     func getNewMsgs(){
         print("Inside function getNewMsgs")
+        print("The current username is \(currentUsername)")
+        print("The current group name is \(currentGroupName)")
         newMsgListener = database
             .collection("users")
             .document(currentUsername)
@@ -498,11 +526,17 @@ extension GroupStateModel {
                     return
                 }
                 
+                print("Inside the getNewMsgs listener, before collecting msgs")
+                
+                print("The objects const in getNewMsgs is \(objects)")
+                
                 //holds text, type, created date
-                let messages: [Message] = objects.compactMap({//taking the text, sender, and created pieces out, casting them to appropriate expected types
+                let newMessages: [Message] = objects.compactMap({ //taking the text, sender, and created pieces out, casting them to appropriate expected types
                     guard let date = ISO8601DateFormatter().date(from: $0["created"] as? String ?? "") else {
+                        print("Could not return date as ISO861 format")
                         return nil
                     }
+                    print("The date recovered is \(date)")
                     return Message(
                         id: $0["id"] as? String ?? "",
                         text: $0["text"] as? String ?? "",
@@ -510,18 +544,24 @@ extension GroupStateModel {
                         type: $0["sender"] as? String == self?.currentUsername ? .sent : .received,
                         sender: $0["sender"] as? String ?? "",
                         created: date,
-                        read: $0["read"] as? Bool ?? false
+                        read: false
+                            //$0["read"] as? Bool ?? false
                     )
-                }).sorted(by: { first, second in
+                })
+                .sorted(by: { first, second in
                     return first.created < second.created
                 })
+                
+                print("The messages are \(newMessages)")
                 
                 if self?.inChat == true
                 {
                     print("Inside inChat == True")
                     
-                    for msg in messages
+                    for msg in newMessages
                     {
+                        print("The message is \(msg.text)")
+                        
                         if msg.read == false
                         {
                             print("Message id is \(msg.id)")
@@ -540,7 +580,7 @@ extension GroupStateModel {
                     DispatchQueue.main.async
                     {
                         self?.unReadMsgs = 0
-                        self?.messages = messages
+                        self?.messages = newMessages
                     }
                 }
                 else
@@ -548,7 +588,8 @@ extension GroupStateModel {
                     print("Inside inChat == False")
                     
                     var newMsgNum: Int = 0
-                    for msg in messages{
+                    for msg in newMessages{
+                        print("The message is \(msg.text)")
                         if msg.read == false
                         {
                             newMsgNum += 1
@@ -560,7 +601,7 @@ extension GroupStateModel {
                     
                     DispatchQueue.main.async {
                         self?.unReadMsgs = newMsgNum
-                        self?.messages = messages
+                        self?.messages = newMessages
                         print("Inside dispatch queue the number of unread messages are \(String(describing: self?.unReadMsgs))")
                     }
                     

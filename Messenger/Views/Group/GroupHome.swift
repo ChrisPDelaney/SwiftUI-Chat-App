@@ -189,13 +189,14 @@ struct GroupHome: View {
                 print("Calling getGroupName from frontend")
                 model2.getGroupName()
                 
-                print("The group name after all functions is \(model2.currentGroupName)")
+                print("The group name after all functions called is \(model2.currentGroupName)")
                 print("The group members after all functions called are \(model2.currentGroup)")
+                print("The messages after all functions called are \(model2.messages)")
                 
             }
             .background(
                 NavigationLink( //name will be the other user's name we tapped to start a convo with
-                    destination: SearchAddToGroup { selected  in //JP
+                    destination: SearchAddToGroup { selected  in 
                         self.showSearch = false
                         //we want to wait for the search view to disappear before we try to show the chat view
                         
@@ -211,7 +212,7 @@ struct GroupHome: View {
             )
             .background(
                 NavigationLink( //name will be the other user's name we tapped to start a convo with
-                    destination: SearchCreateGroup(isActive: self.$createGroupSelected) { selected, name  in //JP
+                    destination: SearchCreateGroup(isActive: self.$createGroupSelected) { selected, name  in
                         
                         print("Inside brackets after navLink to searchCreateGroup")
                         

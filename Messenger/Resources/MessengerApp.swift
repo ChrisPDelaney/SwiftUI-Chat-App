@@ -17,7 +17,6 @@ struct MessengerApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(MessagesModel())
                 .environmentObject(AppStateModel())
                 .environmentObject(GroupStateModel())
         }

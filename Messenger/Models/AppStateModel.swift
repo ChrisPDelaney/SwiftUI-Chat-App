@@ -550,6 +550,7 @@ extension AppStateModel {
                     self?.currentNumFriends = numFriends
                     self?.showingSignIn = false
                     self?.currentGroup = []
+                    //self?.currentGroupName = ""
                 }
             })
         }

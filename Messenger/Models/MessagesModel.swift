@@ -100,7 +100,7 @@ extension MessagesModel {
                         "id": msg.id,
                         "text": msg.text,
                         "sender": msg.sender,
-                        "created": msg.created,
+                        "created": ISO8601DateFormatter().string(from: msg.created),
                         "read": msg.read
                     ] as [String : Any]
                     

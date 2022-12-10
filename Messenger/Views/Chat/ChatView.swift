@@ -27,7 +27,7 @@ struct ChatView: View {
             
             //This is going to nest a bunch of chat
             ScrollView(.vertical) {
-                ForEach(model.messages, id: \.self) { message in
+                ForEach(model2.messages, id: \.self) { message in
                     ChatRow(text: message.text,
                             type: message.type,
                             sender: message.sender)
@@ -44,21 +44,22 @@ struct ChatView: View {
             }
             .padding()
         }
-        .navigationBarTitle(model.currentDate, displayMode: .inline) //JP FIX
+        .navigationBarTitle(model2.currentDate, displayMode: .inline) //JP FIX
         .toolbar {
             //leave button
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    model.leaveGroup()
+                    model2.leaveGroup2()
                 }) {
                     Text("Leave")
                 }
             }
         }
         .onAppear { //start observing the conversation that we're in
-            model.inChat = true
-            print("The bool inChat is \(model.inChat)")
+            model2.inChat = true
+            print("The bool inChat is \(model2.inChat)")
             model2.getMsgsFromGroupDoc()
+            model2.getNewMsgs()
         }
     }
 }

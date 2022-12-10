@@ -544,8 +544,7 @@ extension GroupStateModel {
                         type: $0["sender"] as? String == self?.currentUsername ? .sent : .received,
                         sender: $0["sender"] as? String ?? "",
                         created: date,
-                        read: false
-                            //$0["read"] as? Bool ?? false
+                        read: $0["read"] as? Bool ?? false
                     )
                 })
                 .sorted(by: { first, second in

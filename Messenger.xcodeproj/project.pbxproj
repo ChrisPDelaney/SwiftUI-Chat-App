@@ -37,7 +37,6 @@
 		8A794ABA2925515E006B6D8A /* SearchCreateGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A794AB92925515E006B6D8A /* SearchCreateGroup.swift */; };
 		8A794ABC29258247006B6D8A /* ChooseGroupName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A794ABB29258247006B6D8A /* ChooseGroupName.swift */; };
 		8A794ABE29258664006B6D8A /* ChooseGroupVenue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A794ABD29258664006B6D8A /* ChooseGroupVenue.swift */; };
-		8A794AC2292D723A006B6D8A /* MessagesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A794AC1292D723A006B6D8A /* MessagesModel.swift */; };
 		8AC6DD21291A0A4400767B78 /* GroupStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC6DD20291A0A4400767B78 /* GroupStateModel.swift */; };
 		8AC6DD25291C36D900767B78 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC6DD24291C36D900767B78 /* Group.swift */; };
 		8AC6DD27291DA18400767B78 /* BeerStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC6DD26291DA18400767B78 /* BeerStateModel.swift */; };
@@ -79,7 +78,6 @@
 		8A794AB92925515E006B6D8A /* SearchCreateGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCreateGroup.swift; sourceTree = "<group>"; };
 		8A794ABB29258247006B6D8A /* ChooseGroupName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseGroupName.swift; sourceTree = "<group>"; };
 		8A794ABD29258664006B6D8A /* ChooseGroupVenue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseGroupVenue.swift; sourceTree = "<group>"; };
-		8A794AC1292D723A006B6D8A /* MessagesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesModel.swift; sourceTree = "<group>"; };
 		8AC6DD20291A0A4400767B78 /* GroupStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupStateModel.swift; sourceTree = "<group>"; };
 		8AC6DD24291C36D900767B78 /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		8AC6DD26291DA18400767B78 /* BeerStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerStateModel.swift; sourceTree = "<group>"; };
@@ -237,7 +235,6 @@
 				833EE90B262B1D23004A9F9E /* AppStateModel.swift */,
 				8AC6DD26291DA18400767B78 /* BeerStateModel.swift */,
 				8AC6DD20291A0A4400767B78 /* GroupStateModel.swift */,
-				8A794AC1292D723A006B6D8A /* MessagesModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -392,7 +389,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6E52B8CA28077A1F00A5D729 /* UserProfile.swift in Sources */,
-				8A794AC2292D723A006B6D8A /* MessagesModel.swift in Sources */,
 				6E8EEEC327FE5725007CACFC /* GroupUser.swift in Sources */,
 				6E8EEEBB27FE2E23007CACFC /* GroupHome.swift in Sources */,
 				8A794ABA2925515E006B6D8A /* SearchCreateGroup.swift in Sources */,

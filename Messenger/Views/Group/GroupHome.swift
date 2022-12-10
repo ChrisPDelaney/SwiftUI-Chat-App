@@ -80,7 +80,7 @@ struct GroupHome: View {
                         label: {
                             Image(systemName: "message") //Image("chat")
                                 .font(.system(size: 65))
-                                .overlay(NotificationNumLabel(digit: $model.unReadMsgs))
+                                .overlay(NotificationNumLabel(digit: $model2.unReadMsgs))
                                 //.overlay(NotificationNumLabel(digit: $exampleNum))
                                 //.resizable()
                                 //.scaledToFit()
@@ -173,7 +173,7 @@ struct GroupHome: View {
                 SignInView()
             })
             .onAppear {
-                model.inChat = false
+                model2.inChat = false
                 print("\n The bool inChat is \(model.inChat)")
                 
                 print("The group name before any functions is \(model2.currentGroupName)")

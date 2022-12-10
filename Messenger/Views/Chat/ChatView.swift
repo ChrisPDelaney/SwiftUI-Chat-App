@@ -58,8 +58,10 @@ struct ChatView: View {
         .onAppear { //start observing the conversation that we're in
             model2.inChat = true
             print("The bool inChat is \(model2.inChat)")
-            model2.getMsgsFromGroupDoc()
-            model2.getNewMsgs()
+            
+            //These have already been called in groupHome, and the listeners are still on, so no need to call here again. Just makes things slower
+            //model2.getMsgsFromGroupDoc()
+            //model2.getNewMsgs()
         }
     }
 }

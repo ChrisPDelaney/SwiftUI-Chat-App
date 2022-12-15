@@ -59,9 +59,15 @@ struct ChatView: View {
             model2.inChat = true
             print("The bool inChat is \(model2.inChat)")
             
+            model2.readAllMsgs()
+            
             //These have already been called in groupHome, and the listeners are still on, so no need to call here again. Just makes things slower
             //model2.getMsgsFromGroupDoc()
             //model2.getNewMsgs()
+            DispatchQueue.main.async
+            {
+                model2.unReadMsgs = 0
+            }
         }
     }
 }

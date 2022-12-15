@@ -208,7 +208,7 @@ extension GroupStateModel {
                 
                 print("The newGroupName var is set to \(newGroupName)")
                 
-                //if new group name found is not empty and it does not equal the existing stored name
+                //if new group name found
                 if !newGroupName.isEmpty{  //&& self!.currentGroupName != newGroupName{
                     // AND statement for UI loading efficiency, don't want to call getGroup2 here if
                     // the group has not changed, bc for that case the UI view already called getGroup
@@ -560,7 +560,7 @@ extension GroupStateModel {
                     for msg in newMessages
                     {
                         print("The message is \(msg.text)")
-                        
+
                         if msg.read == false
                         {
                             print("Message id is \(msg.id)")
@@ -573,7 +573,7 @@ extension GroupStateModel {
                             }
                         }//END if msg read == false
                     }//END for loop
-                    
+
                     print("Exited for loop making all messages read")
                     
                     DispatchQueue.main.async
@@ -642,5 +642,47 @@ extension GroupStateModel {
 //                .setData(data)
 //        }
     }//END sendMessage
+    
+    //This function is required for the case when there are a static number of unread messages and the user enters the chat. The listener from getNewMsgs only will set msgs to read = false when new ones come in and the user is inside chat. This function sets all msgs to read = false one time once chat entered.
+    func readAllMsgs(){
+        
+        if self.currentUsername == "" {
+            print("No username. Returning")
+            return
+        }
+        
+        if self.currentGroupName == "" {
+            print("No group name. Returning")
+            return
+        }
+        
+        if self.inChat == false {
+            print("Not in chat, so not reading messages")
+            return
+        }
+        
+        print("In readAllMsgs")
+        print("The messages are \(self.messages)")
+        
+        for msg in self.messages
+        {
+            print("The message is \(msg.text)")
+            
+            if msg.read == false
+            {
+                print("Message id is \(msg.id)")
+                self.database.collection("users").document(self.currentUsername ).collection("myGroups").document(self.currentGroupName).collection("messages").document(msg.id).setData([ "read": true ], merge: true) { err in
+                    if let err = err {
+                        print("Error writing document: \(err)")
+                    } else {
+                        print("Document successfully written!")
+                    }
+                }
+            }//END if msg read == false
+        }//END for loop
+        
+        
+    }//END readAllMsgs
+    
 }
 

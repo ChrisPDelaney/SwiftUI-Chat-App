@@ -26,14 +26,28 @@ struct ChatView: View {
         VStack { 
             
             //This is going to nest a bunch of chat
-            ScrollView(.vertical) {
-                ForEach(model2.messages, id: \.self) { message in
-                    ChatRow(text: message.text,
-                            type: message.type,
-                            sender: message.sender)
+            ScrollViewReader{ value in
+                ScrollView(.vertical) {
+//                    Button("Jump to bottom"){
+//                        value.scrollTo(model2.messages.last)
+//                    }
+                    ForEach(model2.messages, id: \.self) { message in
+                        ChatRow(text: message.text,
+                                type: message.type,
+                                sender: message.sender)
                         .padding(3)
+                        .id(message)
+                    }
+                    .onAppear{
+                        print("The last message in msgs is \(model2.messages.last?.text)")
+                        value.scrollTo(model2.messages.last, anchor: .bottom)
+                    }
+                    .onChange(of: model2.messages.count) { _ in
+                        value.scrollTo(model2.messages.last)
+                    }
+                    
                 }
-            }
+            }//END ScrollViewReader
 
             // Field, send button
             HStack {

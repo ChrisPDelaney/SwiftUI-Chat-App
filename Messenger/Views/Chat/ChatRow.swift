@@ -30,7 +30,7 @@ struct ChatRow: View {
             if !isSender {
                 Spacer()
                 HStack {
-                    Text(sender)
+                    Text(sender).font(Font.system(size: 12))
                     Spacer()
                 }
             }
@@ -43,7 +43,7 @@ struct ChatRow: View {
                 //if it's not the sender
                 if !isSender {
                     VStack {
-                        Spacer()
+                        //Spacer()
                         Image(model.currentUsername == "Matt" ? "photo1" : "photo2")
                             .resizable()
                             .scaledToFit()
@@ -56,11 +56,14 @@ struct ChatRow: View {
                 HStack {
                     Text(text)
                         .foregroundColor(isSender ? Color.white : Color(.label)) //label color accomodates light/dark mode
+                        .font(Font.system(size: 15))
                         .padding()
                 }
                 .background(isSender ? Color.blue : Color(.systemGray4))
                 .padding(isSender ? .leading : .trailing, //cuts off message so it doesn't take up width of whole screen
                          isSender ? UIScreen.main.bounds.width/3 : UIScreen.main.bounds.width/5)
+                //.padding(isSender ? .leading : .trailing)
+                //.padding(isSender ? UIScreen.main.bounds.width/3 : UIScreen.main.bounds.width/5)
                 .cornerRadius(6)
 
                 if !isSender { Spacer() }
